@@ -1,9 +1,9 @@
 .headerContainer {
     height: 5rem;
-    padding: 0 2rem;
+    padding: 4rem 0 ;
 
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 
     // border: 1px solid black;
@@ -31,7 +31,7 @@
 
         input {
             width: 90%;
-            height: 1.5rem;
+            height: 2rem;
 
             padding-left: 1rem;
 
@@ -40,7 +40,7 @@
         }
 
         i {
-            font-size: 1.2rem;
+            font-size: 1.6rem;
         }
     }
 
@@ -64,6 +64,7 @@
 
     .info {
         width: 100%;
+        max-width: 1440px;
         padding: 1rem;
 
         > h2 {
@@ -73,10 +74,12 @@
     }
 
     .tableContainer {
-        min-width: 80%;
+        width: 100%;
+        max-width: 1440px;
         padding: 0 1rem;
 
         display: flex;
+        align-items: center;
         justify-content: space-around;
 
         // border: 1px solid red;
@@ -87,9 +90,15 @@
             border-collapse: collapse;
         }
 
+        table {
+            height: 100%;
+            width: 70%;
+        }
+
         
         .btnContainer {
             height: 31.43rem;
+            max-height: 75%;
 
             display: flex;
             flex-direction: column;
@@ -104,7 +113,7 @@
             }
 
             button {
-                height: 2.5rem;
+                height: 3.5rem;
                 width: 80%;
 
                 border: none;
@@ -121,7 +130,7 @@
                 justify-content: space-around;
 
                 button {
-                    height: 3rem;
+                    height: 3.5rem;
                     width: 40%;
                 }
             }
