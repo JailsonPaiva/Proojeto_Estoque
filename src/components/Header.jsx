@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 import styles from './Header.module.scss'
 
 import logo from '../../public/assets/logo.png'
@@ -9,7 +11,9 @@ function Header() {
 
             <h2>CADASTRAR NOVA ORDEM DE COMPRAS</h2>
 
-            <i class="fa-solid fa-bars"></i> 
+            <Link to="/">
+                <i class="fa-solid fa-house-chimney"></i>
+            </Link>
         </header>
     );
 }

@@ -1,3 +1,4 @@
+import {  Link } from 'react-router-dom'
 import styles from './Home.module.scss'
 
 function Home() {
@@ -69,8 +70,7 @@ function Home() {
 
                     <section className={styles.btnContainer}>
                         <button>
-                            <i class="fa-solid fa-plus"></i>
-                            RECEBER NOVA ORDEM
+                            <Link to="/cadastrar">Cadastrar nova ordem </Link>
                         </button>
 
                         <div>
