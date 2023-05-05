@@ -1,9 +1,51 @@
-.mainContainer {
-    width: 100%;
-    max-width: 1224px;  
-    padding: 20px;
+.hr {
+    margin: 2rem  5rem 0;
+    color: #000;
+}
 
+.mainContainer {
+    height: 80vh;
+    width: 100%;
+    // max-width: 1224px;  
+    padding: 20px;
     margin: 0 auto;
 
-    border: 1px solid red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 4px;
+    // border: 1px solid red;
+
+    & form {
+        height: 30rem;
+        width: 100%;
+        max-width: 1224px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        
+        padding: 2rem;
+
+        background: #fff;
+
+        .divButton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            // border: 1px solid red;
+
+            & > button {
+                width: 100%;
+                max-width: 18rem;
+                margin: 0 auto;
+
+                // background: #00913D;
+                border: none;
+            }
+        }
+    }
 }

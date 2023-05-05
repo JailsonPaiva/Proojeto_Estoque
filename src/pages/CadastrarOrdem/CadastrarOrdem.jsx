@@ -10,15 +10,16 @@ function CadastrarOrdem() {
   return (
    <>
     <Header />
+    
+    <hr className={styles.hr}/>
 
     <main className={styles.mainContainer}>
-      <hr />
 
-      <Form>
+      <Form className='lg'>
       <Row className="mb-3">
         <Form.Group as={Col} xs={4} controlId="formGridEmail">
           <Form.Label>Nº da ordem</Form.Label>
-          <Form.Control type="text" placeholder="Digite o número da ordem" />
+          <Form.Control type="text" placeholder="Digite o número da ordem" required/>
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridPassword">
@@ -30,7 +31,7 @@ function CadastrarOrdem() {
       <Row className="mb-3">
         <Form.Group as={Col} controlId="formGridCity">
           <Form.Label>CNPJ</Form.Label>
-          <Form.Control type="text" placeholder='CNPJ do fornecedor'/>
+          <Form.Control type="text" placeholder='CNPJ do fornecedor' required/>
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridState">
@@ -40,27 +41,41 @@ function CadastrarOrdem() {
 
         <Form.Group as={Col} controlId="formFile">
           <Form.Label>Arquivo da ordem</Form.Label>
-          <Form.Control type='file'/>
+          <Form.Control type='file' required/>
         </Form.Group>
       </Row>
 
-      <Form.Group className="mb-3" controlId="formGridAddress1">
-        <Form.Label>Address</Form.Label>
-        <Form.Control placeholder="1234 Main St" />
-      </Form.Group>
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridCity">
+          <Form.Label>Descrição</Form.Label>
+          <Form.Control type="text" placeholder='Descreva a ordem recebida'/>
+        </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formGridAddress2">
-        <Form.Label>Address 2</Form.Label>
-        <Form.Control placeholder="Apartment, studio, or floor" />
-      </Form.Group>
+        <Form.Group as={Col} xs={3} controlId="formGridState">
+          <Form.Label>Qtd Total</Form.Label>
+          <Form.Control type="number"  placeholder='Quantidade total da ordem'/>
+        </Form.Group>
+
+        <Form.Group as={Col} xs={2} controlId="formFile">
+          <Form.Label>Valor</Form.Label>
+          <Form.Control type='number' placeholder='R$ 0,00'/>
+        </Form.Group>
+      </Row>
+    
 
       <Form.Group className="mb-3" id="formGridCheckbox">
-        <Form.Check type="checkbox" label="Check me out" />
+        <Form.Check type="checkbox" label="Confirma dados" />
       </Form.Group>
 
-      <Button variant="primary" type="submit">
-        Submit
-      </Button>
+      <div className={styles.divButton}>
+        <Button variant="success" type="submit" >
+          Próximo
+        </Button>
+
+        <Button variant="danger" type="submit" >
+          Limpar
+        </Button>
+      </div>
     </Form>
 
     </main>
