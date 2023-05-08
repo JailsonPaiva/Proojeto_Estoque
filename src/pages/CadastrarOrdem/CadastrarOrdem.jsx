@@ -1,5 +1,7 @@
 import Header from '../../components/Header';
 
+import { Link } from 'react-router-dom'
+
 import styles from './CadastrarOrdem.module.scss'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -15,7 +17,7 @@ function CadastrarOrdem() {
 
     <main className={styles.mainContainer}>
 
-      <Form className='lg'>
+      <Form>
       <Row className="mb-3">
         <Form.Group as={Col} xs={4} controlId="formGridEmail">
           <Form.Label>Nº da ordem</Form.Label>
@@ -68,9 +70,11 @@ function CadastrarOrdem() {
       </Form.Group>
 
       <div className={styles.divButton}>
-        <Button variant="success" type="submit" >
-          Próximo
+
+        <Button variant="success">
+          <Link to="/confirmar" className={styles.link}>Próximo</Link>
         </Button>
+         
 
         <Button variant="danger" type="submit" >
           Limpar
