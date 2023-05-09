@@ -24,15 +24,15 @@ app.post("/confirmar", (req, res) =>{
     const { qtd } =  req.body;
     const { valor } =  req.body;
 
-    let SQL = "INSERT INTO estoque (ordem, cnpj, fornecedor, entrega, valor, qtd, descri) VALUES (?,?,?,?,?,?,?)";
+    // let SQL = "INSERT INTO estoque (ordem, cnpj, fornecedor, entrega, valor, qtd, descri) VALUES (?,?,?,?,?,?,?)";
 
-    db.query(SQL, [ordem, cnpj, fornecedor, entrega, valor, qtd, descri], (err, result) => {
-        if(err) {
-            console.log(err)
-        } else {
-            console.log("tudo certo")
-        }
-    });
+    // db.query(SQL, [ordem, cnpj, fornecedor, entrega, valor, qtd, descri], (err, result) => {
+    //     if(err) {
+    //         console.log(err)
+    //     } else {
+    //         console.log("tudo certo")
+    //     }
+    // });
 
 });
 

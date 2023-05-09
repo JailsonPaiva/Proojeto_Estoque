@@ -1,10 +1,10 @@
 .headerContainer {
-    height: 5rem;
-    padding: 4rem 0 ;
+
+    margin-top: 2rem ;
 
     display: flex;
-    justify-content: space-around;
     align-items: center;
+    justify-content: space-evenly;
 
     // border: 1px solid black;
     .logo {
@@ -35,7 +35,7 @@
 
             padding-left: 1rem;
 
-            border: 1px solid black;
+            border: 1px solid #ced4da;
             border-radius: 35px;
         }
 
@@ -53,15 +53,17 @@
 
 .mainContainer {
     height: 100vh;
-    margin-top: 3rem;
+    width: 100%;
+    max-width: 1440px;
+    margin: 3rem auto;
 
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-
-    // border: 1px solid blue;
-
+    
+    background-color: #fff;
+    
     .info {
         width: 100%;
         max-width: 1440px;
@@ -99,6 +101,8 @@
         .btnContainer {
             height: 31.43rem;
             max-height: 75%;
+            width: 25%;
+
 
             display: flex;
             flex-direction: column;
@@ -106,20 +110,41 @@
             align-items: center;
             gap: 2rem;
 
-            background-color: #ccc;
+            background: linear-gradient(-150deg, #00913d, #00d4ff);
+            border: 1px solid #ced4da;
+            border-radius: 3px;
 
             i {
                 padding-right: 4px;
             }
 
+          
+
             button {
                 height: 3.5rem;
                 width: 80%;
 
+                font-size: 1rem;
+
                 border: none;
                 border-radius: 8px;
-                background-color: white;
+                background-color: #00913cbd;
                 cursor: pointer;
+
+                a {
+                    height: 100%;
+                    width: 100%;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    color: #fff;
+                    text-decoration: none;
+                    font-weight: 600;
+
+                    // border: 1px solid red;
+                }
             }
 
             div {
@@ -132,6 +157,10 @@
                 button {
                     height: 3.5rem;
                     width: 40%;
+                    background-color: #0a57cab2;
+
+                    color: #fff;
+                    font-weight: 600;
                 }
             }
     

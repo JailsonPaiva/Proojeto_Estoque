@@ -1,11 +1,13 @@
 import {  Link } from 'react-router-dom'
 import styles from './Home.module.scss'
+import logo from '../../../public/assets/logo.png'
+
 
 function Home() {
     return(
         <>
             <header className={styles.headerContainer}>
-                <div className={styles.logo}>logo</div>
+                <img src={logo} alt="Logo FASIPE" />
 
                 <div className={styles.busca}>
                     <input type="text" name="busca" id="busca" />
@@ -18,7 +20,7 @@ function Home() {
             <main className={styles.mainContainer}>
                 <div className={styles.info}>
                     <h2>RECEBER MATERIAIS</h2>
-                    <span>HISTÓRICO DE RECEBIMENTO</span>
+                    <span>ORDEM A RECEBER</span>
                     <hr />
                 </div>
 
@@ -70,7 +72,11 @@ function Home() {
 
                     <section className={styles.btnContainer}>
                         <button>
-                            <Link to="/cadastrar">Cadastrar nova ordem </Link>
+                            
+                            <Link to="/cadastrar">
+                                <i class="fa-solid fa-plus-minus"></i>
+                                Cadastrar nova ordem
+                            </Link>
                         </button>
 
                         <div>

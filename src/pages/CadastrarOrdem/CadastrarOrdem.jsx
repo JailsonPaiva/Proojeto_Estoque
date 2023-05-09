@@ -25,7 +25,7 @@ function CadastrarOrdem() {
     Axios.post("http://localhost:8080/confirmar", {
       // ordem, cnpj, fornecedor, entrega, valor, qtd, descri
       ordem: values.numOrdem,
-      fornecedor: values.razaoSocial,
+      fornecedor: values.fornecedor,
       cnpj: values.cnpj,
       entrega: values.data,
       descri: values.desc,
@@ -53,7 +53,7 @@ function CadastrarOrdem() {
 
         <Form.Group as={Col} controlId="formGridPassword">
           <Form.Label>Razão Social</Form.Label>
-          <Form.Control onChange={handleChangeValues} name="razaoSocial" type="text" placeholder="Razão social LTDA" />
+          <Form.Control onChange={handleChangeValues} name="fornecedor" type="text" placeholder="Razão social LTDA" />
         </Form.Group>
       </Row>
 
