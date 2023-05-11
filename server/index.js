@@ -46,6 +46,16 @@ app.get('/confirmar', (req, res) => {
     })
 })
 
+app.get('/ordem', (req, res) => {
+    const SQL = "SELECT * FROM ordem";
+
+    db.query(SQL, (err, result) => {
+        if(err) {
+            console.log(err)
+        } else res.send(result)
+    })
+})
+
 app.listen(8080, () => {
     console.log("Server Rodando!")
 });
