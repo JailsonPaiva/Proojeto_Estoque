@@ -36,7 +36,15 @@ app.post("/confirmar", (req, res) =>{
 
 });
 
+app.get('/confirmar', (req, res) => {
+    const SQL = "SELECT * FROM estoque";
 
+    db.query(SQL, (err, result) => {
+        if(err) {
+            console.log(err)
+        } else res.send(result)
+    })
+})
 
 app.listen(8080, () => {
     console.log("Server Rodando!")
