@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Axios from "axios";
 
 import Header from '../../components/Header';
+import Group from '../../components/Group';
 
 import { Link } from 'react-router-dom'
 
@@ -13,8 +14,8 @@ import Row from 'react-bootstrap/Row';
 
 
 function CadastrarOrdem() {
-  const [values, setValues] = useState();
-  const [newValues, setNewValues] = useState();
+  const [values, setValues] = useState([]);
+  const [newValues, setNewValues] = useState(['']);
   // console.log(values)
   const handleChangeValues = (value) => {
     setValues((data) => ({
@@ -28,7 +29,7 @@ function CadastrarOrdem() {
       cnpj: values.cnpj
     }).then((response) => {
       setNewValues(response.data)
-      console.log(newValues[0].id)
+
     })
   }
 
@@ -57,6 +58,33 @@ function CadastrarOrdem() {
 
         <Form>
           <Row className="mb-3">
+            <Form.Group as={Col} xs={4} controlId="formGridCity">
+              <Form.Label>CNPJ</Form.Label>
+              <Form.Control onChange={handleChangeValues} name='cnpj' type="text" placeholder='CNPJ do fornecedor' required/>
+            </Form.Group>
+
+            {newValues.map((value) => {
+                return (
+                    <>
+                      < Group 
+                        key={value.id}
+                        newValues={newValues}
+                        fornecedor={value.fornecedor}
+                        numOrdem={value.ordem}
+                        entrega={value.entrega}
+                        descri={value.descri}
+                        qtd={value.qtd}
+                        valor={value.valor}
+                      />
+                   
+                    </>
+                );
+
+                
+            })}
+          </Row>
+
+          {/* <Row className="mb-3">
             <Form.Group as={Col} xs={4} controlId="formGridCity">
               <Form.Label>CNPJ</Form.Label>
               <Form.Control onChange={handleChangeValues} name='cnpj' type="text" placeholder='CNPJ do fornecedor' required/>
@@ -101,12 +129,7 @@ function CadastrarOrdem() {
               <Form.Label>Valor</Form.Label>
               <Form.Control onChange={handleChangeValues} name='valor' type='text' placeholder='R$ 0,00' />
             </Form.Group>
-          </Row>
-
-
-          <Form.Group className="mb-3" id="formGridCheckbox">
-            <Form.Check type="checkbox" label="Confirma dados" />
-          </Form.Group>
+          </Row> */}
 
           <div className={styles.divButton}>
 
