@@ -1,10 +1,13 @@
-import {  Link } from 'react-router-dom'
-import styles from './Home.module.scss'
+import { Link } from 'react-router-dom'
+
 import logo from '../../../public/assets/logo.png'
+
+import styles from './Home.module.scss'
+import Table from 'react-bootstrap/Table';
 
 
 function Home() {
-    return(
+    return (
         <>
             <header className={styles.headerContainer}>
                 <img src={logo} alt="Logo FASIPE" />
@@ -25,54 +28,39 @@ function Home() {
                 </div>
 
                 <section className={styles.tableContainer}>
-                    <table>
-                        <tr>
-                            <th>Nº DA ORDEM</th>
-                            <th>FORNECEDOR</th>
-                            <th>DATA DE RECEBIMETNO</th>
-                            <th>VISUAZILAR</th>
-                        </tr>
-                        <tr>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                        </tr>
-                        <tr>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                        </tr>
-                        <tr>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                        </tr>
-                        <tr>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                        </tr>
-                        <tr>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                        </tr>
-                        <tr>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                            <td>teste</td>
-                        </tr>
-                    </table>
+
+                    <Table responsive striped  hover>
+                        <thead>
+                            <tr>
+                                <th>Nº DA ORDEM</th>
+                                <th>FORNECEDOR</th>
+                                <th>DATA DE RECEBIMETNO</th>
+                                <th>VISUAZILAR</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+
+                            <tr>
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <td key={index}>Table cell {index}</td>
+                                ))}
+                            </tr>
+                            <tr>
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <td key={index}>Table cell {index}</td>
+                                ))}
+                            </tr>
+                            <tr>
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <td key={index}>Table cell {index}</td>
+                                ))}
+                            </tr>
+                        </tbody>
+                    </Table>
 
                     <section className={styles.btnContainer}>
                         <button>
-                            
+
                             <Link to="/cadastrar">
                                 <i class="fa-solid fa-plus-minus"></i>
                                 Cadastrar nova ordem

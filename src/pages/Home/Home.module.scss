@@ -85,18 +85,6 @@
         justify-content: space-around;
 
         // border: 1px solid red;
-        table, th, td {
-            padding: .5rem;
-            
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-
-        table {
-            height: 100%;
-            width: 70%;
-        }
-
         
         .btnContainer {
             height: 31.43rem;
@@ -110,7 +98,7 @@
             align-items: center;
             gap: 2rem;
 
-            background: linear-gradient(-150deg, #00913d, #00d4ff);
+            background: #f8f8f8;
             border: 1px solid #ced4da;
             border-radius: 3px;
 

@@ -19,9 +19,9 @@ function ConfirmarDados() {
             setListDados(response.data)
         }),
 
-        Axios.get("http://localhost:8080/ordem").then((response) => {
-            setListOrdem(response.data)
-        });
+            Axios.get("http://localhost:8080/ordem").then((response) => {
+                setListOrdem(response.data)
+            });
     }, []);
 
     return (
@@ -34,20 +34,20 @@ function ConfirmarDados() {
                         return (
                             <>
                                 <span >Nº  Ordem<br />{value.ordem}</span>
-                                <input type="text" name="fornecedor" placeholder='Nome do fornecedor' value={listDados[0].fornecedor} disabled/>
-                                <input type="text" name="cnpj" placeholder='CNPJ' value={listDados[0].cnpj} disabled/>
+                                <input type="text" name="fornecedor" placeholder='Nome do fornecedor' value={listDados[0].fornecedor} disabled />
+                                <input type="text" name="cnpj" placeholder='CNPJ' value={listDados[0].cnpj} disabled />
                             </>
                         );
                     })}
 
-                    
+
 
                 </section>
 
                 <section className={styles.sectionTable}>
 
                     <hr />
-                    <Table responsive>
+                    <Table responsive striped>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -64,9 +64,9 @@ function ConfirmarDados() {
                         <tbody>
 
                             {typeof listOrdem !== "undefined" && listOrdem.map((value) => {
-                                return(
-                                    
-                                    <Tr 
+                                return (
+
+                                    <Tr
                                         key={value.id}
                                         listDados={listOrdem}
                                         setListDados={setListDados}

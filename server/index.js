@@ -3,6 +3,7 @@ const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
 
+// CONEXÃO BANCO DE DADOS
 const db = mysql.createPool({
     host:"concipe.com.br",
     user:"concipecom_fasiclin",
@@ -11,30 +12,30 @@ const db = mysql.createPool({
 
 });
 
+// SERVER CONFIG
 app.use(cors());
 app.use(express.json());
 
-
-app.post("/confirmar", (req, res) =>{
-    const { ordem } = req.body;
-    const { fornecedor } =  req.body;
+//ROTAS 
+app.post("/consultar", (req, res) =>{
     const { cnpj } =  req.body;
-    const { entrega } =  req.body;
-    const { descri } =  req.body;
-    const { qtd } =  req.body;
-    const { valor } =  req.body;
 
-    // let SQL = "INSERT INTO estoque (ordem, cnpj, fornecedor, entrega, valor, qtd, descri) VALUES (?,?,?,?,?,?,?)";
+    let SQL = `select * from estoque, ordem where estoque.cnpj = ${cnpj}  and ordem.cnpj = ${cnpj}`;
 
-    // db.query(SQL, [ordem, cnpj, fornecedor, entrega, valor, qtd, descri], (err, result) => {
-    //     if(err) {
-    //         console.log(err)
-    //     } else {
-    //         console.log("tudo certo")
-    //     }
-    // });
+    db.query(SQL, (err, result) => {
+        if(err) {
+            console.log(err)
+        } else {
+            console.log(result)
+            res.send(result)
+        }
+    });
 
 });
+
+// app.get("/consultarOrdem", (req, res) => {
+    
+// })
 
 app.get('/confirmar', (req, res) => {
     const SQL = "SELECT * FROM estoque";
@@ -56,6 +57,8 @@ app.get('/ordem', (req, res) => {
     })
 })
 
+
+//PORTAS
 app.listen(8080, () => {
     console.log("Server Rodando!")
 });
