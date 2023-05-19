@@ -41,29 +41,19 @@ app.post("/consultar", (req, res) =>{
 
 });
 
-app.post('/valor', (req, res) => {
-    const { ordem } = req.body;
-
-    const SQL2 = `select sum(qtd_produto) as total from ordem_de_compra as ordem, item_ordem_de_compra as item where ordem.num_ordem_comp = ${ordem} and item.num_ordem_comp = ${ordem} `;
-
-    db.query(SQL2,   (err, result) => {
-        if(err) {
-            console.log(err)
-        } else {
-            console.log(result)
-            res.send(result)
-        }
-    });
-})
-
-
-
 // app.get("/consultarOrdem", (req, res) => {
     
 // })
 
 app.get('/confirmar', (req, res) => {
-    const SQL = "SELECT * FROM estoque";
+    const { ordem } = req.params;
+    
+    const SQL = `select produto.id_produto, produto.nome_pord, produto.desc_produto, 
+    item_ordem_de_compra.unidade_medida, lote.data_vecimento, 
+    item_ordem_de_compra.qtd_produto, item_ordem_de_compra.valor, lote.id_lote
+    from produto, lote, item_ordem_de_compra 
+    where item_ordem_de_compra.id_produto = produto.id_produto;
+    `;
 
     db.query(SQL, (err, result) => {
         if(err) {

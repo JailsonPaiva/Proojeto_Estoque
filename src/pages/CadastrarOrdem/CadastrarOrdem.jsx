@@ -13,6 +13,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
 
+
 function CadastrarOrdem() {
   const [values, setValues] = useState([]);
   const [newValues, setNewValues] = useState([]);
@@ -53,6 +54,14 @@ function CadastrarOrdem() {
     const year = currentDate.getFullYear();
   
     return `${day}/${month}/${year}`;
+  }
+
+  const getConfirmar = () => {
+    Axios.get("/confirmar", {
+      params: values.ordem 
+    }).then((response) => {
+      console.log(response)
+    })
   }
 
   // const handleClickProximo = () => {
@@ -174,13 +183,13 @@ function CadastrarOrdem() {
 
           <div className={styles.divButton}>
 
-            <Button variant="success">
+            <Button variant="primary">
               <Link onClick={consultar} className={styles.link}>Buscar</Link>
             </Button>
 
 
-            <Button variant="danger" type="submit" >
-              Limpar
+            <Button variant="success" type="submit" >
+             <Link to="/confirmar"> Próximo</Link>
             </Button>
           </div>
         </Form>
