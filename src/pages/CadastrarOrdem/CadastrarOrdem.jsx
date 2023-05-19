@@ -15,7 +15,8 @@ import Row from 'react-bootstrap/Row';
 
 function CadastrarOrdem() {
   const [values, setValues] = useState([]);
-  const [newValues, setNewValues] = useState(['']);
+  const [newValues, setNewValues] = useState([]);
+  const [total, setTotal] = useState([]);
   // console.log(values)
   const handleChangeValues = (value) => {
     setValues((data) => ({
@@ -24,13 +25,34 @@ function CadastrarOrdem() {
     }))
   }
 
-  const consultar = () => {
-    Axios.post("http://localhost:8080/consultar", {
-      cnpj: values.cnpj
+  const consultar = async () => {
+    await Axios.post("http://localhost:8080/consultar", {
+      ordem: values.ordem
     }).then((response) => {
-      setNewValues(response.data)
-
+      const data = response.data
+      setNewValues(data)
+      // console.log(data)
     })
+    // console.log(newValues[1][0].total)
+  }
+
+  // const consultar = async () => {
+  //   await Axios.post("http://localhost:8080/consultar", {
+  //     ordem: values.ordem
+  //   }).then((response) => {
+  //     setNewValues(response.data)
+  //     console.log(response.data[0])
+  //     console.log(newValues)
+  //   })
+  // }
+
+  function getCurrentDate() {
+    const currentDate = new Date();
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const year = currentDate.getFullYear();
+  
+    return `${day}/${month}/${year}`;
   }
 
   // const handleClickProximo = () => {
@@ -57,84 +79,103 @@ function CadastrarOrdem() {
       <main className={styles.mainContainer}>
 
         <Form>
+  
           <Row className="mb-3">
-            <Form.Group as={Col} xs={4} controlId="formGridCity">
-              <Form.Label>CNPJ</Form.Label>
-              <Form.Control onChange={handleChangeValues} name='cnpj' type="text" placeholder='CNPJ do fornecedor' required/>
+            <Form.Group as={Col} xs={4}>
+              <Form.Label>Nº ORDEM</Form.Label>
+              <Form.Control
+                onChange={handleChangeValues}
+                // onBlur={consultar}
+                name='ordem'
+                type="text"
+                placeholder='Numero da Ordem'
+                required />
             </Form.Group>
-
-            {newValues.map((value) => {
-                return (
-                    <>
-                      < Group 
-                        key={value.id}
-                        newValues={newValues}
-                        fornecedor={value.fornecedor}
-                        numOrdem={value.ordem}
-                        entrega={value.entrega}
-                        descri={value.descri}
-                        qtd={value.qtd}
-                        valor={value.valor}
-                      />
-                   
-                    </>
-                );
-
-                
-            })}
-          </Row>
-
-          {/* <Row className="mb-3">
-            <Form.Group as={Col} xs={4} controlId="formGridCity">
-              <Form.Label>CNPJ</Form.Label>
-              <Form.Control onChange={handleChangeValues} name='cnpj' type="text" placeholder='CNPJ do fornecedor' required/>
-            </Form.Group>
-            
 
             <Form.Group as={Col} controlId="formGridPassword">
               <Form.Label>Razão Social</Form.Label>
-              <Form.Control onChange={handleChangeValues} name="fornecedor" type="text" placeholder="Razão social LTDA"  />
+              <Form.Control 
+              onChange={handleChangeValues} 
+              name="fornecedor" 
+              type="text"
+              value={!newValues.length ? '' : newValues[0][0].razao_social} 
+              placeholder="Razão social LTDA" 
+              disabled/>
             </Form.Group>
           </Row>
 
           <Row className="mb-3">
-            <Form.Group as={Col}  controlId="formGridEmail">
-              <Form.Label >Nº da ordem</Form.Label>
-              <Form.Control onChange={handleChangeValues} name="numOrdem" type="text" placeholder="Digite o número da ordem"  />
+           <Form.Group as={Col} xs={4} controlId="formGridCity">
+              <Form.Label>CNPJ</Form.Label>
+              <Form.Control 
+              onChange={handleChangeValues} 
+              name='cnpj' 
+              type="text"
+              value={!newValues.length ? '' : newValues[0][0].cnpj} 
+              placeholder='CNPJ do fornecedor'  
+              disabled/>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridState">
               <Form.Label>Data da Entrega</Form.Label>
-              <Form.Control onChange={handleChangeValues} name='data' type="text" />
+              <Form.Control 
+              onChange={handleChangeValues}
+              placeholder='00/00/0000'
+              name='data' 
+              type="text"
+              value={!newValues.length ? '' : getCurrentDate()} 
+              disabled/>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formFile">
               <Form.Label>Arquivo da ordem</Form.Label>
-              <Form.Control onChange={handleChangeValues} name='arquivo' type='file'  />
+              <Form.Control 
+              onChange={handleChangeValues} 
+              name='arquivo' 
+              type='file'
+              />
             </Form.Group>
           </Row>
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridCity">
               <Form.Label>Descrição</Form.Label>
-              <Form.Control onChange={handleChangeValues} name='desc' type="text" placeholder='Descreva a ordem recebida' />
+              <Form.Control 
+              onChange={handleChangeValues} 
+              name='desc' 
+              type="text"
+              value={'dscri'} 
+              placeholder='Descreva a ordem recebida' 
+              disabled/>
             </Form.Group>
 
             <Form.Group as={Col} xs={3} controlId="formGridState">
               <Form.Label>Qtd Total</Form.Label>
-              <Form.Control onChange={handleChangeValues} name='qtdTotal' type="text" placeholder='Quantidade total da ordem' />
+              <Form.Control 
+              onChange={handleChangeValues} 
+              name='qtdTotal' 
+              type="text"
+              value={!newValues.length ? '' : newValues[1][0].total} 
+              placeholder='Quantidade total da ordem' 
+              disabled/>
             </Form.Group>
 
             <Form.Group as={Col} xs={2} controlId="formFile">
               <Form.Label>Valor</Form.Label>
-              <Form.Control onChange={handleChangeValues} name='valor' type='text' placeholder='R$ 0,00' />
+              <Form.Control 
+              onChange={handleChangeValues} 
+              name='valor' 
+              type='text'
+              value={!newValues.length ? '' : `R$ ${newValues[0][0].valor}`} 
+              placeholder='R$ 0,00' 
+              disabled/>
             </Form.Group>
-          </Row> */}
+          </Row>
 
           <div className={styles.divButton}>
 
             <Button variant="success">
-              <Link onClick={consultar} className={styles.link}>Próximo</Link>
+              <Link onClick={consultar} className={styles.link}>Buscar</Link>
             </Button>
 
 

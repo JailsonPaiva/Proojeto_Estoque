@@ -5,12 +5,17 @@ const cors = require("cors");
 
 // CONEXÃO BANCO DE DADOS
 const db = mysql.createPool({
-    host:"concipe.com.br",
-    user:"concipecom_fasiclin",
-    password:"db_aluno2023",
-    database: "concipecom_fasiclin"
-
+    // host:"concipe.com.br",
+    // user:"concipecom_fasiclin",
+    // password:"db_aluno2023",
+    // database: "concipecom_fasiclin"
+    host:"localhost",
+    user:"root",
+    password:"root",
+    database: "estoque",
+    multipleStatements: true // Habilita queries múltiplas
 });
+
 
 // SERVER CONFIG
 app.use(cors());
@@ -18,11 +23,14 @@ app.use(express.json());
 
 //ROTAS 
 app.post("/consultar", (req, res) =>{
-    const { cnpj } =  req.body;
+    const { ordem } =  req.body;
 
-    let SQL = `select * from estoque, ordem where estoque.cnpj = ${cnpj}  and ordem.cnpj = ${cnpj}`;
+    const SQL = `select ordem.valor_ordem as valor, ordem.num_ordem_comp as ordem, fornecedor.razao_social, ordem.cnpj_fornecedor as cnpj from fornecedor, ordem_de_compra as ordem, item_ordem_de_compra as item where ordem.num_ordem_comp = ${ordem} and item.num_ordem_comp = ${ordem} and ordem.cnpj_fornecedor = fornecedor.cnpj  limit 1;
 
-    db.query(SQL, (err, result) => {
+    select sum(qtd_produto) as total from ordem_de_compra as ordem, item_ordem_de_compra as item where ordem.num_ordem_comp = ${ordem} and item.num_ordem_comp = ${ordem};
+    `;
+
+    db.query(SQL,   (err, result) => {
         if(err) {
             console.log(err)
         } else {
@@ -32,6 +40,23 @@ app.post("/consultar", (req, res) =>{
     });
 
 });
+
+app.post('/valor', (req, res) => {
+    const { ordem } = req.body;
+
+    const SQL2 = `select sum(qtd_produto) as total from ordem_de_compra as ordem, item_ordem_de_compra as item where ordem.num_ordem_comp = ${ordem} and item.num_ordem_comp = ${ordem} `;
+
+    db.query(SQL2,   (err, result) => {
+        if(err) {
+            console.log(err)
+        } else {
+            console.log(result)
+            res.send(result)
+        }
+    });
+})
+
+
 
 // app.get("/consultarOrdem", (req, res) => {
     
