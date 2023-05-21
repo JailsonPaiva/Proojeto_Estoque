@@ -46,13 +46,18 @@ app.post("/consultar", (req, res) =>{
 // })
 
 app.get('/confirmar', (req, res) => {
-    const { ordem } = req.params;
+    const { ordem } = req.query;
+    console.log(ordem)
     
-    const SQL = `select produto.id_produto, produto.nome_pord, produto.desc_produto, 
-    item_ordem_de_compra.unidade_medida, lote.data_vecimento, 
-    item_ordem_de_compra.qtd_produto, item_ordem_de_compra.valor, lote.id_lote
-    from produto, lote, item_ordem_de_compra 
-    where item_ordem_de_compra.id_produto = produto.id_produto;
+    const SQL = `select item_ordem_de_compra.id_produto, produto.nome_pord, produto.desc_produto, 
+    item_ordem_de_compra.unidade_medida, fornecedor.nome_fornecedor, ordem_de_compra.num_ordem_comp, ordem_de_compra.cnpj_fornecedor,
+    item_ordem_de_compra.qtd_produto, item_ordem_de_compra.valor, lote.data_vecimento, lote.id_lote
+    from produto inner join item_ordem_de_compra on item_ordem_de_compra.id_produto = produto.id_produto
+    inner join lote on lote.num_ordem_comp = item_ordem_de_compra.num_ordem_comp
+	inner join ordem_de_compra on ordem_de_compra.num_ordem_comp = item_ordem_de_compra.num_ordem_comp
+    inner join fornecedor on fornecedor.cnpj = ordem_de_compra.cnpj_fornecedor
+    where item_ordem_de_compra.num_ordem_comp = ${ordem} and item_ordem_de_compra.id_produto = lote.id_produto
+    and ordem_de_compra.cnpj_fornecedor = fornecedor.cnpj;
     `;
 
     db.query(SQL, (err, result) => {

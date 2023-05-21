@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Axios from "axios";
+import InputMask from "react-input-mask";
 
 import Header from '../../components/Header';
 import Group from '../../components/Group';
@@ -17,7 +18,7 @@ import Row from 'react-bootstrap/Row';
 function CadastrarOrdem() {
   const [values, setValues] = useState([]);
   const [newValues, setNewValues] = useState([]);
-  const [total, setTotal] = useState([]);
+  const [newCnpj, setNewCnpj] = useState('');
   // console.log(values)
   const handleChangeValues = (value) => {
     setValues((data) => ({
@@ -26,13 +27,18 @@ function CadastrarOrdem() {
     }))
   }
 
-  const consultar = async () => {
-    await Axios.post("http://localhost:8080/consultar", {
+  
+
+
+  const consultar =  () => {
+     Axios.post("http://localhost:8080/consultar", {
       ordem: values.ordem
     }).then((response) => {
       const data = response.data
       setNewValues(data)
-      // console.log(data)
+      const cnpj = '1234567890'
+      maskCnpj(cnpj)
+      setNewCnpj(maskCnpj(cnpj))
     })
     // console.log(newValues[1][0].total)
   }
@@ -64,6 +70,23 @@ function CadastrarOrdem() {
     })
   }
 
+  function maskCnpj(cnpj) {
+    const cnpjRegex = /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/;
+    return cnpj.replace(cnpjRegex, "$1.$2.$3/$4-$5");
+  }
+
+  function formatCurrency(value) {
+    const options = {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    };
+  
+    const formattedValue = value.toLocaleString('pt-BR', options);
+    return formattedValue;
+  }
+  
   // const handleClickProximo = () => {
   //   Axios.get("http://localhost:8080/consultar", {
   //     // ordem, cnpj, fornecedor, entrega, valor, qtd, descri
@@ -79,9 +102,10 @@ function CadastrarOrdem() {
   //   });
   // };
 
+  const url = `/confirmar?ordem=${values.ordem}`
   return (
     <>
-      <Header />
+      <Header url="/"/>
 
       <hr className={styles.hr} />
 
@@ -116,11 +140,14 @@ function CadastrarOrdem() {
           <Row className="mb-3">
            <Form.Group as={Col} xs={4} controlId="formGridCity">
               <Form.Label>CNPJ</Form.Label>
-              <Form.Control 
+              <Form.Control
               onChange={handleChangeValues} 
-              name='cnpj' 
+              // name='cnpj' 
               type="text"
-              value={!newValues.length ? '' : newValues[0][0].cnpj} 
+              mask="99.999.999/9999-99"
+              className={styles.cnpj}
+              pattern="\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}"
+              value={!newValues.length ? '' : newCnpj} 
               placeholder='CNPJ do fornecedor'  
               disabled/>
             </Form.Group>
@@ -175,7 +202,7 @@ function CadastrarOrdem() {
               onChange={handleChangeValues} 
               name='valor' 
               type='text'
-              value={!newValues.length ? '' : `R$ ${newValues[0][0].valor}`} 
+              value={!newValues.length ? '' : formatCurrency(newValues[0][0].valor)} 
               placeholder='R$ 0,00' 
               disabled/>
             </Form.Group>
@@ -189,7 +216,7 @@ function CadastrarOrdem() {
 
 
             <Button variant="success" type="submit" >
-             <Link to="/confirmar"> Próximo</Link>
+             <Link to={url} > Próximo</Link>
             </Button>
           </div>
         </Form>

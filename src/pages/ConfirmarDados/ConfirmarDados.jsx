@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import Axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import InputMask from "react-input-mask";
+
 
 import Header from '../../components/Header'
 import Tr from '../../components/Tr'
@@ -12,35 +14,47 @@ import Table from 'react-bootstrap/Table';
 function ConfirmarDados() {
     const [listDados, setListDados] = useState([]);
     const [listOrdem, setListOrdem] = useState([]);
-    console.log(listOrdem)
+
+
+    const location = useLocation();
+    const params = new URLSearchParams(location.search)
+    const ordem = params.get('ordem')
+    console.log(ordem)
 
     useEffect(() => {
-        Axios.get("http://localhost:8080/confirmar").then((response) => {
+        Axios.get("http://localhost:8080/confirmar", {
+            params: {
+                ordem: ordem
+            }
+        }).then((response) => {
             setListDados(response.data)
-        }),
-
-            Axios.get("http://localhost:8080/ordem").then((response) => {
-                setListOrdem(response.data)
-            });
+        })
     }, []);
 
     return (
         <>
-            <Header />
+            <Header url="/cadastrar"/>
 
             <main>
                 <section className={styles.sectionContainer}>
-                    {typeof listDados !== "undefined" && listDados.map((value) => {
-                        return (
-                            <>
-                                <span >Nº  Ordem<br />{value.ordem}</span>
-                                <input type="text" name="fornecedor" placeholder='Nome do fornecedor' value={listDados[0].fornecedor} disabled />
-                                <input type="text" name="cnpj" placeholder='CNPJ' value={listDados[0].cnpj} disabled />
-                            </>
-                        );
-                    })}
 
+                    <span >Nº  Ordem<br />
+                        {!listDados[0] ? '' : listDados[0].num_ordem_comp}
+                    </span>
 
+                    <input type="text"
+                        name="fornecedor"
+                        placeholder='Nome do fornecedor'
+                        disabled
+                        value={!listDados[0] ? '' : listDados[0].nome_fornecedor} />
+
+                    <InputMask
+                        type="text"
+                        name="cnpj"
+                        placeholder='CNPJ'
+                        mask="99.999.999/9999-99"
+                        disabled
+                        value={!listDados[0] ? '' : listDados[0].cnpj_fornecedor} />
 
                 </section>
 
@@ -63,21 +77,19 @@ function ConfirmarDados() {
                         </thead>
                         <tbody>
 
-                            {typeof listOrdem !== "undefined" && listOrdem.map((value) => {
+                            {typeof listDados !== "undefined" && listDados.map((value) => {
                                 return (
 
                                     <Tr
-                                        key={value.id}
-                                        listDados={listOrdem}
+                                        key={value.id_lote}
+                                        listDados={listDados}
                                         setListDados={setListDados}
-                                        id={value.id}
-                                        numProduto={value.numProduto}
-                                        nomeProduto={value.nomeProduto}
-                                        produto={value.produto}
-                                        descri={value.descri}
-                                        medida={value.medida}
-                                        vencimento={value.vencimento}
-                                        qtd={value.qtd}
+                                        numProduto={value.id_produto}
+                                        produto={value.nome_pord}
+                                        descri={value.desc_produto}
+                                        medida={value.unidade_medida}
+                                        vencimento={value.data_vencimento}
+                                        qtd={value.qtd_produto}
                                         lote={value.lote}
                                         valor={value.valor}
                                     />

@@ -5,7 +5,7 @@ function Tr(props) {
         <tr>
             <td>{props.id}</td>
             <td>{props.numProduto}</td>
-            <td>{props.nomeProduto}</td>
+            <td>{props.produto}</td>
             <td>{props.descri}</td>
             <td>{props.medida}</td>
             <td>{props.vencimento}</td>
