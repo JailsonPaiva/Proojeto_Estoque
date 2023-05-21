@@ -1,16 +1,56 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
+import Axios from 'axios';
 
 import logo from '../../../public/assets/logo.png'
+import TrHome from '../../components/TrHome';
 
 import styles from './Home.module.scss'
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
 
 
 function Home() {
+    const [listDados, setListDados] = useState([]);
+
+    useEffect(() => {
+        Axios.get("http://localhost:8080/")
+        .then((response) => {
+            setListDados(response.data)
+            console.log(response.data)
+        })
+    }, [])
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        
+        return `${day}-${month}-${year}`;
+      }
+
+      function formatCurrency(value) {
+        const options = {
+          style: 'currency',
+          currency: 'BRL',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        };
+    
+        const formattedValue = value.toLocaleString('pt-BR', options);
+        return formattedValue;
+      }
+ 
+
     return (
         <>
             <header className={styles.headerContainer}>
-                <img src={logo} alt="Logo FASIPE" />
+                <Link to="/">
+                    <img src={logo} alt="Logo FASIPE" />
+                </Link>
 
                 <div className={styles.busca}>
                     <input type="text" name="busca" id="busca" />
@@ -34,43 +74,40 @@ function Home() {
                             <tr>
                                 <th>Nº DA ORDEM</th>
                                 <th>FORNECEDOR</th>
-                                <th>DATA DE RECEBIMETNO</th>
-                                <th>VISUAZILAR</th>
+                                <th>PREVIÇÃO DA ENTREGA</th>
+                                <th>VALOR</th>
                             </tr>
                         </thead>
                         <tbody >
 
-                            <tr>
-                                {Array.from({ length: 4 }).map((_, index) => (
-                                    <td key={index}>Table cell {index}</td>
-                                ))}
-                            </tr>
-                            <tr>
-                                {Array.from({ length: 4 }).map((_, index) => (
-                                    <td key={index}>Table cell {index}</td>
-                                ))}
-                            </tr>
-                            <tr>
-                                {Array.from({ length: 4 }).map((_, index) => (
-                                    <td key={index}>Table cell {index}</td>
-                                ))}
-                            </tr>
+                        {typeof listDados !== "undefined" && listDados.map((value) => {
+                                return (
+
+                                    <TrHome
+                                        key={value.num_ordem_comp}
+                                        listDados={listDados}
+                                        numOrdem={value.num_ordem_comp}
+                                        fornecedor={value.nome_fornecedor}
+                                        dataEntrega={formatDate(value.data_entrega)}
+                                        valor={formatCurrency(value.valor_ordem)}
+                                    />
+                                );
+                            })}
                         </tbody>
                     </Table>
 
                     <section className={styles.btnContainer}>
-                        <button>
-
+                        <Button variant="success">
                             <Link to="/cadastrar">
                                 <i class="fa-solid fa-plus-minus"></i>
                                 Cadastrar nova ordem
                             </Link>
-                        </button>
+                        </Button>
 
-                        <div>
-                            <button>Reposição de Materiais</button>
-                            <button>Fechamento de Balanço</button>
-                        </div>
+                        <Row>
+                            <Button variant="primary">Reposição de Materiais</Button>
+                            <Button variant="primary">Fechamento de Balanço</Button>
+                        </Row>
                     </section>
                 </section>
             </main>

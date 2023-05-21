@@ -7,7 +7,9 @@ import logo from '../../public/assets/logo.png'
 function Header(props) {
     return(
         <header className={styles.headerContainer}>
-            <img src={logo} alt="Logo FASIPE" />
+            <Link to="/">
+                <img src={logo} alt="Logo FASIPE" />
+            </Link>
 
             <h2>CADASTRAR NOVA ORDEM DE COMPRAS</h2>
 

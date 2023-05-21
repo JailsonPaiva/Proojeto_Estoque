@@ -22,6 +22,18 @@ app.use(cors());
 app.use(express.json());
 
 //ROTAS 
+
+app.get("/", (req, res) => {
+    const SQL = 'select ordem_de_compra.num_ordem_comp, ordem_de_compra.data_entrega, ordem_de_compra.valor_ordem ,fornecedor.nome_fornecedor from ordem_de_compra     inner join fornecedor on fornecedor.cnpj = ordem_de_compra.cnpj_fornecedor;'
+
+    
+    db.query(SQL, (err, result) => {
+        if(err) {
+            console.log(err)
+        } else res.send(result)
+    })
+})
+
 app.post("/consultar", (req, res) =>{
     const { ordem } =  req.body;
 
