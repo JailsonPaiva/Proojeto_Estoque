@@ -8,7 +8,7 @@ const db = mysql.createPool({
     // host:"concipe.com.br",
     // user:"concipecom_fasiclin",
     // password:"db_aluno2023",
-    // database: "concipecom_fasiclin"
+    // database: "concipecom_fasiclin",
     host:"localhost",
     user:"root",
     password:"root",
