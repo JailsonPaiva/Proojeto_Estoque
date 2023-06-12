@@ -29,18 +29,27 @@ function ConfirmarDados() {
             }
         }).then((response) => {
             setListDados(response.data)
-            console.log(response.data)
+            console.log(response.data[0])
         })
     }, []);
+
+    const cadastrarLote = async () => {
+       await Axios.post("http://localhost:8080/cadastrar-lote", {
+            data: listDados
+        }).then((response) => {
+            const res = response
+            console.log(res)
+        })
+    }
 
     //MASCARAS
     function formatDate(dateString) {
         const date = new Date(dateString);
-        
+
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
-        
+
         return `${day}-${month}-${year}`;
     }
 
@@ -55,11 +64,11 @@ function ConfirmarDados() {
         const formattedValue = value.toLocaleString('pt-BR', options);
         return formattedValue;
     }
- 
+
 
     return (
         <>
-            <Header url="/cadastrar"/>
+            <Header url="/cadastrar" />
 
             <main>
                 <section className={styles.sectionContainer}>
@@ -125,7 +134,10 @@ function ConfirmarDados() {
                     </Table>
 
                     <Button variant="success">
-                        <Link to="/" className={styles.link}>Próximo</Link>
+                        <Link 
+                            onClick={cadastrarLote}
+                            // to={cadastrarLote()} 
+                            className={styles.link}>Próximo</Link>
                     </Button>
                 </section>
             </main>
