@@ -74,7 +74,7 @@ function Home() {
                             <tr>
                                 <th>Nº DA ORDEM</th>
                                 <th>FORNECEDOR</th>
-                                <th>PREVIÇÃO DA ENTREGA</th>
+                                <th>PREVISÃO ENTREGA</th>
                                 <th>VALOR</th>
                             </tr>
                         </thead>

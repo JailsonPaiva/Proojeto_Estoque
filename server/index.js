@@ -105,7 +105,6 @@ app.post("/cadastrar-lote", (req, res) => {
         const SQL = `select lote.id_lote, item_ordem_de_compra.unidade_medida from lote inner join item_ordem_de_compra on lote.id_produto = item_ordem_de_compra.id_produto where lote.id_produto = ${produtoAtual.id_produto} and item_ordem_de_compra.id_produto = ${produtoAtual.id_produto};
         `;
 
-
         const {
             id_produto,
             num_ordem_comp,

@@ -13,7 +13,23 @@ import Table from 'react-bootstrap/Table';
 
 function ConfirmarDados() {
     const [listDados, setListDados] = useState([]);
-    const [listOrdem, setListOrdem] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
+    // Calcular índices dos itens a serem exibidos na página atual
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    // Obter os itens da página atual
+    const currentPageItems = listDados.slice(startIndex, endIndex);
+
+    // Calcular o número total de páginas
+    const totalPages = Math.ceil(listDados.length / itemsPerPage);
+
+    // Função para mudar a página atual
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
 
     const location = useLocation();
@@ -34,7 +50,7 @@ function ConfirmarDados() {
     }, []);
 
     const cadastrarLote = async () => {
-       await Axios.post("http://localhost:8080/cadastrar-lote", {
+        await Axios.post("http://localhost:8080/cadastrar-lote", {
             data: listDados
         }).then((response) => {
             const res = response
@@ -111,34 +127,52 @@ function ConfirmarDados() {
                             </tr>
                         </thead>
                         <tbody>
-
-                            {typeof listDados !== "undefined" && listDados.map((value) => {
-                                return (
-
-                                    <Tr
-                                        key={value.id_lote}
-                                        listDados={listDados}
-                                        setListDados={setListDados}
-                                        numProduto={value.id_produto}
-                                        produto={value.nome_pord}
-                                        descri={value.desc_produto}
-                                        medida={value.unidade_medida}
-                                        vencimento={formatDate(value.data_vecimento)}
-                                        qtd={value.qtd_produto}
-                                        lote={value.lote}
-                                        valor={formatCurrency(value.valor)}
-                                    />
-                                );
-                            })}
+                            {currentPageItems.map((value) => (
+                                <Tr
+                                    key={value.id_lote}
+                                    listDados={listDados}
+                                    setListDados={setListDados}
+                                    numProduto={value.id_produto}
+                                    produto={value.nome_pord}
+                                    descri={value.desc_produto}
+                                    medida={value.unidade_medida}
+                                    vencimento={formatDate(value.data_vecimento)}
+                                    qtd={value.qtd_produto}
+                                    lote={value.lote}
+                                    valor={formatCurrency(value.valor)}
+                                />
+                            ))}
                         </tbody>
                     </Table>
 
+                    <div>
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => handlePageChange(index + 1)}
+                                style={{
+                                    margin: '0.5rem',
+                                    padding: '0.5rem 1rem',
+                                    backgroundColor: currentPage === index + 1 ? 'green' : '#fff',
+                                    color: 'black',
+                                    border: currentPage === index + 1 ? 'none' : '1px solid #ccc',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                }}
+                                disabled={currentPage === index + 1}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                    </div>
+
                     <Button variant="success">
-                        <Link 
+                        <Link
                             onClick={cadastrarLote}
                             // to={cadastrarLote()} 
                             className={styles.link}>Próximo</Link>
                     </Button>
+
                 </section>
             </main>
         </>
