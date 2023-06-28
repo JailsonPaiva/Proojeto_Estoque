@@ -53,8 +53,9 @@ function Home() {
                 </Link>
 
                 <div className={styles.busca}>
-                    <input type="text" name="busca" id="busca" />
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                    {/* <input type="text" name="busca" id="busca" />
+                    <i class="fa-solid fa-magnifying-glass"></i> */}
+                    <h2>SISTEMA DE ESTOQUE</h2>
                 </div>
 
                 <i class="fa-solid fa-bars"></i>
@@ -100,7 +101,7 @@ function Home() {
                         <Button variant="success">
                             <Link to="/cadastrar">
                                 <i class="fa-solid fa-plus-minus"></i>
-                                Cadastrar nova ordem
+                                Verificar nova ordem
                             </Link>
                         </Button>
 

@@ -112,7 +112,7 @@ function ConfirmarDados() {
                 <section className={styles.sectionTable}>
 
                     <hr />
-                    <Table responsive striped>
+                    <Table responsive striped hover>
                         <thead>
                             <tr>
                                 <th>#</th>

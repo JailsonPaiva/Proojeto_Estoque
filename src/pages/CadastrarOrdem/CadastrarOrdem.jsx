@@ -145,6 +145,7 @@ function CadastrarOrdem() {
                 // onBlur={consultar}
                 name='ordem'
                 type="text"
+                className='px-3'
                 placeholder='Numero da Ordem'
                 required />
             </Form.Group>
@@ -154,6 +155,7 @@ function CadastrarOrdem() {
               <Form.Control
                 onChange={handleChangeValues}
                 name="fornecedor"
+                className='px-3'
                 type="text"
                 value={!newValues.length ? '' : newValues[0][0].razao_social}
                 placeholder="Razão social LTDA"
@@ -169,7 +171,7 @@ function CadastrarOrdem() {
                 // name='cnpj' 
                 type="text"
                 mask="99.999.999/9999-99"
-                className={styles.cnpj}
+                className={`${styles.cnpj} px-3`}
                 pattern="\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}"
                 value={!newValues.length ? '' : newCnpj}
                 placeholder='CNPJ do fornecedor'
@@ -181,6 +183,7 @@ function CadastrarOrdem() {
               <Form.Control
                 onChange={handleChangeValues}
                 placeholder='00/00/0000'
+                className='px-3'
                 name='data'
                 type="text"
                 value={!newValues.length ? '' : getCurrentDate()}
@@ -188,17 +191,20 @@ function CadastrarOrdem() {
             </Form.Group>
 
             <Form.Group as={Col} controlId="formFile">
-              <Form.Label>Arquivo da ordem</Form.Label>
+              <Form.Label>CNAE</Form.Label>
               <Form.Control
                 onChange={handleChangeValues}
-                name='arquivo'
-                type='file'
-              />
+                name="cnae"
+                className='px-3'
+                type="text"
+                value={!newValues.length ? '' : newValues[0][0].razao_social}
+                placeholder="0000/00"
+                disabled />
             </Form.Group>
           </Row>
 
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridCity">
+            {/* <Form.Group as={Col} controlId="formGridCity">
               <Form.Label>Descrição</Form.Label>
               <Form.Control
                 onChange={handleChangeValues}
@@ -207,12 +213,13 @@ function CadastrarOrdem() {
                 value={'dscri'}
                 placeholder='Descreva a ordem recebida'
                 disabled />
-            </Form.Group>
+            </Form.Group> */}
 
-            <Form.Group as={Col} xs={3} controlId="formGridState">
+            <Form.Group as={Col} xs={6} controlId="formGridState">
               <Form.Label>Qtd Total</Form.Label>
               <Form.Control
                 onChange={handleChangeValues}
+                className='px-3'
                 name='qtdTotal'
                 type="text"
                 value={!newValues.length ? '' : newValues[1][0].total}
@@ -220,10 +227,11 @@ function CadastrarOrdem() {
                 disabled />
             </Form.Group>
 
-            <Form.Group as={Col} xs={2} controlId="formFile">
+            <Form.Group as={Col} xs={6} controlId="formFile">
               <Form.Label>Valor</Form.Label>
               <Form.Control
                 onChange={handleChangeValues}
+                className='px-3'
                 name='valor'
                 type='text'
                 value={!newValues.length ? '' : formatCurrency(newValues[0][0].valor)}
