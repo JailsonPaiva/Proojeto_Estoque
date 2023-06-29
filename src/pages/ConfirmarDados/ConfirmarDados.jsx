@@ -43,9 +43,9 @@ function ConfirmarDados() {
             params: {
                 ordem: ordem
             }
-        }).then((response) => {
-            setListDados(response.data)
-            console.log(response.data[0])
+        }).then(({ data }) => {
+            setListDados(data)
+            console.log(data)
         })
     }, []);
 
@@ -123,22 +123,20 @@ function ConfirmarDados() {
                                 <th>Vencimento</th>
                                 <th>QTD</th>
                                 <th>Valor</th>
-                                <th>Lote</th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentPageItems.map((value) => (
                                 <Tr
-                                    key={value.id_lote}
+                                    key={value.id_produto}
                                     listDados={listDados}
                                     setListDados={setListDados}
                                     numProduto={value.id_produto}
-                                    produto={value.nome_pord}
+                                    produto={value.nome_prod}
                                     descri={value.desc_produto}
                                     medida={value.unidade_medida}
-                                    vencimento={formatDate(value.data_vecimento)}
+                                    vencimento={formatDate(value.data_vencimento)}
                                     qtd={value.qtd_produto}
-                                    lote={value.lote}
                                     valor={formatCurrency(value.valor)}
                                 />
                             ))}

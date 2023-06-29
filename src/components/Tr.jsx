@@ -11,7 +11,6 @@ function Tr(props) {
             <td>{props.vencimento}</td>
             <td>{props.qtd}</td>
             <td>{props.valor}</td>
-            <td>{props.lote}</td>
         </tr>
     );
 }

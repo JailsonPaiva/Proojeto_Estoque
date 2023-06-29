@@ -40,14 +40,14 @@ function CadastrarOrdem() {
       }).then((response) => {
         const data = response.data
         // console.log(response)
+        // console.log(data[0][0].cnpj)
         if(!data[0].length || data[0].length <= 0) {
           toast.error('Não foi encontrado nenhuma ordem com esse numero.');
           // console.log(newValues)
         } else {
-          // console.log(data)
           toast.success('Consulta realiza!');
           setNewValues(data)
-          const cnpj = '1234567890'
+          const cnpj = data[0][0].cnpj
           maskCnpj(cnpj)
           setNewCnpj(maskCnpj(cnpj))
         }
@@ -61,13 +61,13 @@ function CadastrarOrdem() {
   }
 
 
-  const getConfirmar = () => {
-    Axios.get("/confirmar", {
-      params: values.ordem
-    }).then((response) => {
-      console.log(response)
-    })
-  }
+  // const getConfirmar = () => {
+  //   Axios.get("/confirmar", {
+  //     params: values.ordem
+  //   }).then((response) => {
+  //     console.log(response)
+  //   })
+  // }
 
 
   // const consultar = async () => {
@@ -197,7 +197,7 @@ function CadastrarOrdem() {
                 name="cnae"
                 className='px-3'
                 type="text"
-                value={!newValues.length ? '' : newValues[0][0].razao_social}
+                value={!newValues.length ? '' : newValues[0][0].cnae}
                 placeholder="0000/00"
                 disabled />
             </Form.Group>
