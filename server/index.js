@@ -82,7 +82,7 @@ app.get('/confirmar', (req, res) => {
     from est_produto inner join est_item_ordem_de_compra on est_item_ordem_de_compra.id_produto = est_produto.id_produto
 	inner join est_ordem_de_compra on est_ordem_de_compra.num_ordem_comp = est_item_ordem_de_compra.num_ordem_comp
     inner join est_fornecedor on est_fornecedor.cnpj = est_ordem_de_compra.cnpj_fornecedor
-    where est_item_ordem_de_compra.num_ordem_comp = ${ordem} and est_ordem_de_compra.cnpj_fornecedor = est_fornecedor.cnpj;`
+    where est_item_ordem_de_compra.num_ordem_comp = ${ordem} and est_ordem_de_compra.cnpj_fornecedor = est_fornecedor.cnpj order by id_produto ASC;`
 
     db.query(SQL, (err, result) => {
         if (err) {
@@ -135,10 +135,12 @@ app.post("/cadastrar-lote", (req, res) => {
             '${dataFormatada}', '${data_vencimento}', 'fasiclin', ${qtd_produto});`
 
         db.query(SQL2, (err, result) => {
-            if (err) console.log(err)
-            else console.log(result)
+            if (err){
+                return res.status(500).send(err)
+            } 
         })
-
+        
+        return res.status(200)
         // for (let j = 0; j < data.length; j++) {
         //     const produtoAtual = data[i];
 
@@ -146,10 +148,6 @@ app.post("/cadastrar-lote", (req, res) => {
         // console.log(format(data_vencimento, 'dd-MM-yy HH:mm'));
 
     };
-
-    console.log(data[2]);
-
-    res.send('ok');
 })
 
 //PORTAS

@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import Axios from 'axios';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import InputMask from "react-input-mask";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 import Header from '../../components/Header'
-import Tr from '../../components/Tr'
+// import Tr from '../../components/Tr'
 
 import styles from './ConfirmarDados.module.scss'
 import Button from 'react-bootstrap/Button';
@@ -14,8 +16,9 @@ import Table from 'react-bootstrap/Table';
 function ConfirmarDados() {
     const [listDados, setListDados] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [counter, setCounter] = useState(0);
+    const navigate = useNavigate('')
     const itemsPerPage = 10;
-
     // Calcular índices dos itens a serem exibidos na página atual
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -31,11 +34,19 @@ function ConfirmarDados() {
         setCurrentPage(page);
     };
 
+    const voltarHome = () => {
+        setTimeout(() => navigate('/'), 2000)
+    }
+
+    // const voltarHome = () => {
+    //     toast.success(`Lote cadastrado com sucesso </br> Você será redirecionado para a tela inicial`);
+    //     navigate('/');
+    // }
 
     const location = useLocation();
-    const params = new URLSearchParams(location.search)
-    const ordem = params.get('ordem')
-    console.log(ordem)
+    const params = new URLSearchParams(location.search);
+    const ordem = params.get('ordem');
+    // console.log(ordem)
 
     //ROTA
     useEffect(() => {
@@ -45,7 +56,7 @@ function ConfirmarDados() {
             }
         }).then(({ data }) => {
             setListDados(data)
-            console.log(data)
+            // console.log(data)
         })
     }, []);
 
@@ -53,8 +64,12 @@ function ConfirmarDados() {
         await Axios.post("http://localhost:8080/cadastrar-lote", {
             data: listDados
         }).then((response) => {
-            const res = response
-            console.log(res)
+            console.log(response)
+            // if (data === 'erro') {
+            //     toast.error('Ocorreu um erro ao cadastrar o lote no sistema.');
+            // } else {
+            //     toast.success('Ocorreu um erro ao cadastrar o lote no sistema.');
+            // }
         })
     }
 
@@ -80,6 +95,7 @@ function ConfirmarDados() {
         const formattedValue = value.toLocaleString('pt-BR', options);
         return formattedValue;
     }
+
 
 
     return (
@@ -116,8 +132,8 @@ function ConfirmarDados() {
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nº Produto</th>
                                 <th>Nome Produto</th>
+                                <th>Nº Produto</th>
                                 <th>Descrição</th>
                                 <th>Uni. Medida</th>
                                 <th>Vencimento</th>
@@ -126,20 +142,23 @@ function ConfirmarDados() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentPageItems.map((value) => (
-                                <Tr
-                                    key={value.id_produto}
-                                    listDados={listDados}
-                                    setListDados={setListDados}
-                                    numProduto={value.id_produto}
-                                    produto={value.nome_prod}
-                                    descri={value.desc_produto}
-                                    medida={value.unidade_medida}
-                                    vencimento={formatDate(value.data_vencimento)}
-                                    qtd={value.qtd_produto}
-                                    valor={formatCurrency(value.valor)}
-                                />
-                            ))}
+                            {currentPageItems.map((value, index) => {
+
+                                const valorFomatado = formatCurrency(value.valor * value.qtd_produto)
+
+                                return (
+                                    <tr key={value.id_produto}>
+                                        <td>{index + 1}</td>
+                                        <td>{value.nome_prod}</td>
+                                        <td>{value.id_produto}</td>
+                                        <td>{value.desc_produto}</td>
+                                        <td>{value.unidade_medida}</td>
+                                        <td>{formatDate(value.data_vencimento)}</td>
+                                        <td>{value.qtd_produto}</td>
+                                        <td>{valorFomatado}</td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </Table>
 
