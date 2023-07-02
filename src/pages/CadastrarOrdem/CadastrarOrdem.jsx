@@ -164,7 +164,7 @@ function CadastrarOrdem() {
                 onChange={handleChangeValues}
                 // onBlur={consultar}
                 name='ordem'
-                type="text"
+                type="number"
                 className='px-3'
                 placeholder='Numero da Ordem'
                 required />

@@ -1,0 +1,52 @@
+.container {
+    width: 100vw;
+    margin-top: 6rem;
+    position: relative;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+
+    .form {
+        height: 32rem;
+        width: 80%;
+        // max-width: 80%;
+        padding: 1rem;
+    
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2.35rem;
+    
+        background-color: #fff;
+        border-radius: 5px;
+
+        & h3 {
+            text-align: center;
+        }
+
+        & button {
+            width: 300px;
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    .tabela {
+       
+        & tbody + button {
+            width: 150%;
+            margin: 1rem 50%;
+            display: inline-table;
+        }
+    }
+    
+}
+
+.p {
+    color: white;
+}

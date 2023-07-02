@@ -16,34 +16,34 @@ function Home() {
 
     useEffect(() => {
         Axios.get("http://localhost:8080/")
-        .then((response) => {
-            setListDados(response.data)
-            console.log(response.data)
-        })
+            .then((response) => {
+                setListDados(response.data)
+                console.log(response.data)
+            })
     }, [])
 
     function formatDate(dateString) {
         const date = new Date(dateString);
-        
+
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
-        
-        return `${day}-${month}-${year}`;
-      }
 
-      function formatCurrency(value) {
+        return `${day}-${month}-${year}`;
+    }
+
+    function formatCurrency(value) {
         const options = {
-          style: 'currency',
-          currency: 'BRL',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
         };
-    
+
         const formattedValue = value.toLocaleString('pt-BR', options);
         return formattedValue;
-      }
- 
+    }
+
 
     return (
         <>
@@ -70,7 +70,7 @@ function Home() {
 
                 <section className={styles.tableContainer}>
 
-                    <Table responsive striped  hover>
+                    <Table responsive striped hover>
                         <thead>
                             <tr>
                                 <th>Nº DA ORDEM</th>
@@ -81,7 +81,7 @@ function Home() {
                         </thead>
                         <tbody >
 
-                        {typeof listDados !== "undefined" && listDados.map((value) => {
+                            {typeof listDados !== "undefined" && listDados.map((value) => {
                                 return (
 
                                     <TrHome
@@ -106,7 +106,12 @@ function Home() {
                         </Button>
 
                         <Row>
-                            <Button variant="primary">Reposição de Materiais</Button>
+                            <Button variant="primary">
+                                <Link to="/solicitacao">
+                                    Reposição de Materiais
+                                </Link>
+                            </Button>
+
                             <Button variant="primary">Fechamento de Balanço</Button>
                         </Row>
                     </section>

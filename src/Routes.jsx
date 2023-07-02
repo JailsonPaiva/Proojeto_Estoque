@@ -4,6 +4,7 @@ import { Routes,  Route } from 'react-router-dom';
 import Home  from './pages/Home/Home'
 import  CadastrarOrdem  from './pages/CadastrarOrdem/CadastrarOrdem'
 import ConfirmarDados from "./pages/ConfirmarDados/ConfirmarDados";
+import RegistrarSolicitacao from "./pages/RegistrarSolicitacao/RegistrarSolicitacao";
 
 export default () => {
     return(
@@ -13,6 +14,8 @@ export default () => {
             <Route exact path="/cadastrar" element={<CadastrarOrdem />}/>
             
             <Route exact path="/confirmar" element={<ConfirmarDados />} />
+
+            <Route exact path="/solicitacao" element={<RegistrarSolicitacao />} />
 
         </Routes>
     );
