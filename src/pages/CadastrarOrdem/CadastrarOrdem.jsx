@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import moment from 'moment';
 import Axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,19 +32,25 @@ function CadastrarOrdem() {
 
   //ROTAS
   const consultar = () => {
-
-    if(!values.ordem) {
+    if (!values.ordem) {
       toast.error('O campo de "Nº ORDEM" precisa ser preenchido!');
     } else {
       Axios.post("http://localhost:8080/consultar", {
         ordem: values.ordem
       }).then((response) => {
         const data = response.data
-        // console.log(response)
-        // console.log(data[0][0].cnpj)
-        if(!data[0].length || data[0].length <= 0) {
+        // const recebimento = data[0][0].data_recebimento = "0000-00-00" ? formatarData(data[0][0].data_recebimento) : data[0][0].data_recebimento 
+        // console.log(recebimento)
+        if (!data[0].length || data[0].length <= 0) {
           toast.error('Não foi encontrado nenhuma ordem com esse numero.');
-          // console.log(newValues)
+
+        } if (data[0][0].data_recebimento !== null) {
+          limpa()
+          const recebimento = formatarData(data[0][0].data_recebimento)
+          const hoje = getCurrentDate(new Date())
+          if(recebimento >= hoje) {
+            toast.error('Essa ordem já foi registrada.');
+          }
         } else {
           toast.success('Consulta realiza!');
           setNewValues(data)
@@ -60,6 +67,11 @@ function CadastrarOrdem() {
 
   }
 
+  const limpa = () => {
+    setNewValues([])
+    setNewCnpj('')
+    setValues([])
+  }
 
   // const getConfirmar = () => {
   //   Axios.get("/confirmar", {
@@ -83,14 +95,20 @@ function CadastrarOrdem() {
 
   //MASCARAS
 
-  function getCurrentDate() {
-    const currentDate = new Date();
+  function getCurrentDate(data) {
+    const currentDate = data;
     const day = String(currentDate.getDate()).padStart(2, '0');
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const year = currentDate.getFullYear();
 
     return `${day}/${month}/${year}`;
   }
+
+  const formatarData = (data) => {
+    const dataFormatada = moment(data).format('DD/MM/YYYY');
+    return dataFormatada;
+  };
+
 
   function maskCnpj(cnpj) {
     const cnpjRegex = /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/;
@@ -186,7 +204,7 @@ function CadastrarOrdem() {
                 className='px-3'
                 name='data'
                 type="text"
-                value={!newValues.length ? '' : getCurrentDate()}
+                value={!newValues.length ? '' : getCurrentDate(new Date())}
                 disabled />
             </Form.Group>
 

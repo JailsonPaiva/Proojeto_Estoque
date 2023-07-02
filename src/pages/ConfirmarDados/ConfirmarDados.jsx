@@ -35,7 +35,7 @@ function ConfirmarDados() {
     };
 
     const voltarHome = () => {
-        setTimeout(() => navigate('/'), 2000)
+        setTimeout(() => navigate('/'), 3000)
     }
 
     // const voltarHome = () => {
@@ -64,12 +64,13 @@ function ConfirmarDados() {
         await Axios.post("http://localhost:8080/cadastrar-lote", {
             data: listDados
         }).then((response) => {
-            console.log(response)
-            // if (data === 'erro') {
-            //     toast.error('Ocorreu um erro ao cadastrar o lote no sistema.');
-            // } else {
-            //     toast.success('Ocorreu um erro ao cadastrar o lote no sistema.');
-            // }
+            const data = response.data
+            if (data === 'erro') {
+                toast.error('Ocorreu um erro ao cadastrar o lote no sistema.');
+            } if (data === 'ok') {
+                toast.success('Itens cadastrado com sucesso.');
+                voltarHome()
+            }
         })
     }
 
@@ -100,12 +101,14 @@ function ConfirmarDados() {
 
     return (
         <>
+            <ToastContainer />
+
             <Header url="/cadastrar" />
 
             <main>
                 <section className={styles.sectionContainer}>
 
-                    <span >Nº  Ordem<br />
+                    <span >Nº  Ordem<br/>
                         {!listDados[0] ? '' : listDados[0].num_ordem_comp}
                     </span>
 
@@ -186,7 +189,6 @@ function ConfirmarDados() {
                     <Button variant="success">
                         <Link
                             onClick={cadastrarLote}
-                            // to={cadastrarLote()} 
                             className={styles.link}>Próximo</Link>
                     </Button>
 
