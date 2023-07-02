@@ -33,23 +33,23 @@ function CadastrarOrdem() {
   //ROTAS
   const consultar = () => {
     if (!values.ordem) {
-      toast.error('O campo de "Nº ORDEM" precisa ser preenchido!');
+      toast.error('O campo de "Nº ORDEM" é inválido.');
     } else {
       Axios.post("http://localhost:8080/consultar", {
         ordem: values.ordem
       }).then((response) => {
         const data = response.data
-        // const recebimento = data[0][0].data_recebimento = "0000-00-00" ? formatarData(data[0][0].data_recebimento) : data[0][0].data_recebimento 
-        // console.log(recebimento)
+
         if (!data[0].length || data[0].length <= 0) {
           toast.error('Não foi encontrado nenhuma ordem com esse numero.');
 
         } if (data[0][0].data_recebimento !== null) {
-          limpa()
           const recebimento = formatarData(data[0][0].data_recebimento)
           const hoje = getCurrentDate(new Date())
-          if(recebimento >= hoje) {
+          // console.log(recebimento, hoje)
+          if(recebimento <= hoje) {
             toast.error('Essa ordem já foi registrada.');
+            limpa()
           }
         } else {
           toast.success('Consulta realiza!');
@@ -141,6 +141,8 @@ function CadastrarOrdem() {
   //     console.log(response)
   //   });
   // };
+  
+  
   const url = `/confirmar?ordem=${values.ordem}`
 
   return (

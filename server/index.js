@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 
     const SQL = `select est_ordem_de_compra.num_ordem_comp, est_ordem_de_compra.data_entrega, est_ordem_de_compra.valor_ordem ,est_fornecedor.nome_fornecedor 
     from est_ordem_de_compra inner join est_fornecedor on est_fornecedor.cnpj = est_ordem_de_compra.cnpj_fornecedor
-    where est_ordem_de_compra.data_recebimento = null or est_ordem_de_compra.data_recebimento = 0000-00-00;`
+    where est_ordem_de_compra.data_recebimento is null;`
 
     db.query(SQL, (err, result) => {
         if (err) {
@@ -134,7 +134,8 @@ app.post("/cadastrar-lote", (req, res) => {
 
         // const SQL2 = `insert into lote values(default, ${id_produto}, ${num_ordem_comp}, ${cnpj_fornecedor},'${dataFormatada}', '${vencimento}', 'geral', ${qtd_produto}, ${qtd_produto});`
         const SQL2 = `insert into est_lote values(default, ${id_produto}, ${num_ordem_comp}, ${cnpj_fornecedor},
-            '${dataFormatada}', '${data_vencimento}', 'fasiclin', ${qtd_produto});`
+            '${dataFormatada}', '${data_vencimento}', 'fasiclin', ${qtd_produto});
+            update est_ordem_de_compra set data_recebimento = ${dataFormatada} where num_ordem_comp = ${num_ordem_comp};`
 
         db.query(SQL2, (err, result) => {
             // if (err) {
