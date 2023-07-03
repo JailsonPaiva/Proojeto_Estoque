@@ -107,6 +107,31 @@ app.get('/ordem', (req, res) => {
 })
 
 
+app.get('/profissional', (req, res) => {
+    const { profissional } = req.query;
+    
+    const SQL = `select * from ag_profissional where nome_profissional like "${profissional}";`
+
+    db.query(SQL, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else res.send(result)
+    })
+})
+
+app.get('/consultar-produto', (req, res) => {
+    const { produto } = req.query;
+    
+    const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd from est_lote as lote
+    inner join est_produto as produto on lote.id_produto = ${produto} and produto.id_produto = ${produto} order by qtd desc limit 1;`
+
+    db.query(SQL, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else res.send(result)
+    })
+})
+
 app.post("/cadastrar-lote", (req, res) => {
     // const novoIdLote = resultado[0].id_lote + 1;
     const dataAtual = new Date()
