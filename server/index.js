@@ -122,7 +122,7 @@ app.get('/profissional', (req, res) => {
 app.get('/consultar-produto', (req, res) => {
     const { produto } = req.query;
     
-    const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd from est_lote as lote
+    const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd, produto.id_produto from est_lote as lote
     inner join est_produto as produto on lote.id_produto = ${produto} and produto.id_produto = ${produto} order by qtd desc limit 1;`
 
     db.query(SQL, (err, result) => {

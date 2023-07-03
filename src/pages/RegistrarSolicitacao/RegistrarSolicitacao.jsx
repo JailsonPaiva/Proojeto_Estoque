@@ -10,7 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 function RegistrarSolicitacao() {
     const [values, setValues] = useState({});
     const [consulta, setConsulta] = useState([])
-    const [isEditing, setIsEditing] = useState(true);
+    const [valorTabela, setValorTabela] = useState([])
+    const [isEditing, setIsEditing] = useState(false);
 
 
     const handleChangeValues = (value) => {
@@ -41,11 +42,13 @@ function RegistrarSolicitacao() {
                 profissional: values.solicitante
             }
         }).then(({ data }) => {
-            const permisao = data.retirada_estoque
-            if (!permisao || permisao === false) {
+            const permisao = data[0].retirada_estoque
+            if (!permisao || permisao === 0) {
                 toast.error('Solicitante não tem permissão para realizar retirada no estoque')
+                setIsEditing(false)
             } else {
-                handleDisableEdit()
+                toast.success('Solicitante com permissão')
+                setIsEditing(true);
             }
             console.log(data);
         }).catch((err) => {
@@ -53,32 +56,29 @@ function RegistrarSolicitacao() {
         });
     };
 
-    const consultarProduto = async () => {
-        await Axios.get('http://localhost:8080/consultar-produto', {
+    const consultarProduto = () => {
+        Axios.get('http://localhost:8080/consultar-produto', {
             params: {
                 produto: values.produto
             }
         }).then(({data}) => {
             // console.log(data)
-            setConsulta(data)
-            console.log(consulta)
+            return addProduto(data[0])
+            console.log(data)
+
         }).catch((err) => {
             console.log(err)
         })
     }
 
     // INTERAÇÕES
-    const handleDisableEdit = () => {
-        setIsEditing(true);
+    const addProduto = (value) => {
+        // console.log(value)
+        setConsulta(value)
+        setValorTabela((data) => [...data, value])
+        // setValues([])
+        console.log(valorTabela)
     };
-
-    const addProsuto = () => {
-        produtos.push(
-            // {
-            //     id: values.produto, nome: 
-            // }
-        )
-    }
 
 
     return (
@@ -170,11 +170,11 @@ function RegistrarSolicitacao() {
                         </tr>
                     </thead>
                     <tbody>
-                        {produtos.map((produto) => (
-                            <tr key={produto.id}>
+                        {valorTabela.map((produto) => (
+                            <tr key={produto.id_produto}>
                                 <td>{produto.nome}</td>
-                                <td>{produto.unidadeMedida}</td>
-                                <td>{produto.quantidade}</td>
+                                <td>{produto.medida}</td>
+                                <td>{produto.qtd}</td>
                                 <td>
                                     <Button variant="danger" size="sm" onClick={() => handleRemover(produto.id)}>
                                         Remover
