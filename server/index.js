@@ -174,6 +174,12 @@ app.post("/cadastrar-lote", (req, res) => {
     res.send('ok')
 })
 
+// app.post('finalizar-solicitacao', (req, res) => {
+//     const data = req.body.data;
+
+//     const SQL = 
+// })
+
 //PORTAS
 app.listen(8080, () => {
     console.log("Server Rodando!");

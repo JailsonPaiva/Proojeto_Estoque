@@ -12,6 +12,7 @@ function RegistrarSolicitacao() {
     const [consulta, setConsulta] = useState([])
     const [valorTabela, setValorTabela] = useState([])
     const [isEditing, setIsEditing] = useState(false);
+    const [setor, setSetor] = useState('');
 
 
     const handleChangeValues = (value) => {
@@ -57,29 +58,59 @@ function RegistrarSolicitacao() {
     };
 
     const consultarProduto = () => {
-        Axios.get('http://localhost:8080/consultar-produto', {
-            params: {
-                produto: values.produto
-            }
-        }).then(({data}) => {
-            // console.log(data)
-            return addProduto(data[0])
-            console.log(data)
-
-        }).catch((err) => {
-            console.log(err)
-        })
+        if(!values.produto || !values.qtd) {
+            console.log(values)
+            toast.error('Preencha todos os campos')
+        } else {
+            Axios.get('http://localhost:8080/consultar-produto', {
+                params: {
+                    produto: values.produto
+                }
+            }).then(({data}) => {
+                // console.log(data)
+                if(!data.length) {
+                    return toast.error('produto não encontrado, por favor digite um código válido.')
+                } else {
+                    return addProduto(data[0])
+                }
+    
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
+       
     }
 
     // INTERAÇÕES
-    const addProduto = (value) => {
-        // console.log(value)
-        setConsulta(value)
-        setValorTabela((data) => [...data, value])
-        // setValues([])
-        console.log(valorTabela)
-    };
+    const verificarProdutoNaTabela = (value) => {
+        return valorTabela.some((item) => item.id_produto === value)
+    }
 
+    const verifica = (value) => verificarProdutoNaTabela(value)
+
+    const addProduto = (value) => {
+        if(!values || !setor) {
+            return toast.error('preencha todos os campos')
+        } if(value.qtd < values.qtd) {
+            return toast.error(`A quantidade solicitada é superior ao estoque, limite ${value.qtd}`)
+        } if(verifica(value.id_produto)) {
+            return toast.error(`O produto já estar na lista`)
+        }  else {
+            setConsulta(value)
+            setValorTabela((data) => [...data, {id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd}])
+            // setValues([])
+            console.log(valorTabela)
+            console.log(setor)
+            console.log(consulta)
+            console.log(values)
+        }
+    };
+    
+
+    const deletarItemTabela = (value) => {
+        const attTabela = valorTabela.filter((item) => item.id_produto !== value)
+        setValorTabela(attTabela)
+    }
 
     return (
         <>
@@ -140,7 +171,7 @@ function RegistrarSolicitacao() {
                                 <Form.Control
                                     type="text"
                                     placeholder="Digite o nome do setor"
-                                    onChange={handleChangeValues}
+                                    onChange={(e) => setSetor(e.target.value)}
                                     name='setor'
                                     disabled={!isEditing}
                                 />
@@ -176,7 +207,7 @@ function RegistrarSolicitacao() {
                                 <td>{produto.medida}</td>
                                 <td>{produto.qtd}</td>
                                 <td>
-                                    <Button variant="danger" size="sm" onClick={() => handleRemover(produto.id)}>
+                                    <Button variant="danger" size="sm" onClick={() => deletarItemTabela(produto.id_produto)}>
                                         Remover
                                     </Button>
                                 </td>
