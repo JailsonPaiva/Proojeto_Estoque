@@ -125,9 +125,10 @@ app.get('/consultar-produto', (req, res) => {
     // const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd, produto.id_produto from est_lote as lote
     // inner join est_produto as produto on lote.id_produto = ${produto} and produto.id_produto = ${produto} order by qtd desc limit 1;`
 
-    const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd, produto.id_produto 
+    const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd, produto.id_produto,
+    lote.num_ordem_comp as ordem, lote.cnpj, lote.data_vencimento as vencimento 
     from est_lote as lote inner join est_produto as produto on produto.nome_prod like "%${produto}%"
-    and produto.nome_prod like "%${produto}%" order by qtd desc limit 2;`
+    and produto.nome_prod like "%${produto}%" order by qtd desc limit 4;`
 
     db.query(SQL, (err, result) => {
         if (err) {

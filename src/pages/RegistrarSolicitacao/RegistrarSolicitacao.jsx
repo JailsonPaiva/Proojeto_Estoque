@@ -9,12 +9,12 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function RegistrarSolicitacao() {
     const [values, setValues] = useState({});
-    const [consulta, setConsulta] = useState([])
+    // const [consulta, setConsulta] = useState([])
     const [valorTabela, setValorTabela] = useState([])
-    const [isEditing, setIsEditing] = useState(true);
-    const [setor, setSetor] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    // const [infoProfissional, setInfoProfissional] = useState([]);
     const [nomeProduto, setNomeProduto] = useState('');
-    const [resultadoProduto, setResultadoProduto] = useState(0);
+    const [resultadoProduto, setResultadoProduto] = useState([]);
     const [tabelaResultadoProduto, setTabelaResultadoProduto] = useState([]);
     const [show, setShow] = useState(false);
 
@@ -27,28 +27,22 @@ function RegistrarSolicitacao() {
             ...data,
             [value.target.name]: value.target.value,
         }));
-        console.log(values)
+        // console.log(values)
     };
 
     const mudarValorResultadoProduto = (value) => {
         setResultadoProduto(value)
-        console.log(resultadoProduto)
+        // setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd }])
+        // console.log(resultadoProduto)
         handleClose()
     }
 
-    const produtos = [
-        { id: 1, nome: 'Produto 1', unidadeMedida: 'kg', quantidade: 5 },
-        { id: 2, nome: 'Produto 2', unidadeMedida: 'l', quantidade: 3 },
-        // { id: 3, nome: 'Produto 1', unidadeMedida: 'kg', quantidade: 5 },
-        // { id: 4, nome: 'Produto 2', unidadeMedida: 'l', quantidade: 3 },
-        // { id: 5, nome: 'Produto 1', unidadeMedida: 'kg', quantidade: 5 },
-        // { id: 6, nome: 'Produto 2', unidadeMedida: 'l', quantidade: 3 },
-        // { id: 7, nome: 'Produto 1', unidadeMedida: 'kg', quantidade: 5 },
-        // { id: 8, nome: 'Produto 2', unidadeMedida: 'l', quantidade: 3 },
-    ];
-
-
-    const s = () => console.log(values);
+    // const mudarValorInforProfissional = (value) => { 
+    //     setInfoProfissional((data) => ({
+    //         ...data,
+    //         [value.target.name]: value.target.value,
+    //     }))
+    // }
 
     // ROTAS
     const consultarProfissional = async () => {
@@ -57,7 +51,14 @@ function RegistrarSolicitacao() {
                 profissional: values.solicitante
             }
         }).then(({ data }) => {
+            console.log(data)
             const permisao = data[0].retirada_estoque
+
+            setValues((value) => ({
+                ...value,
+                ['id_profissional']: data[0].id_profissional
+            }));
+            
             if (!permisao || permisao === 0) {
                 toast.error('Solicitante não tem permissão para realizar retirada no estoque')
                 setIsEditing(false)
@@ -65,7 +66,7 @@ function RegistrarSolicitacao() {
                 toast.success('Solicitante com permissão')
                 setIsEditing(true);
             }
-            console.log(data);
+            // console.log(data);
         }).catch((err) => {
             console.log(err);
         });
@@ -107,24 +108,25 @@ function RegistrarSolicitacao() {
     const verifica = (value) => verificarProdutoNaTabela(value)
 
     const addProduto = (value) => {
-        setConsulta(value)
-        setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd }])
-        // setValues([])
-        console.log(valorTabela)
-        console.log(setor)
-        console.log(consulta)
-        console.log(values)
-
-        // if (!values.qtd || !setor) {
-        //     return toast.error('preencha todos os campos')
-        // } 
-        // if (value.qtd < values.qtd) {
-        //     return toast.error(`A quantidade solicitada é superior ao estoque, limite ${value.qtd}`)
-        // } if (verifica(value.id_produto)) {
-        //     return toast.error(`O produto já estar na lista`)
-        // } else {
- 
-        // }
+        if (!values.qtd || !values.setor) {
+            return toast.error('preencha todos os campos')
+        } 
+        if (value.qtd < values.qtd) {
+            return toast.error(`A quantidade solicitada é superior ao estoque, limite ${value.qtd}`)
+        } if (verifica(value.id_produto)) {
+            return toast.error(`O produto já estar na lista`)
+        } else {          
+            setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd, ordem: resultadoProduto.ordem, vencimento: resultadoProduto.vencimento, cnpj: resultadoProduto.cnpj }])
+            setTabelaResultadoProduto([{}])
+            // setValues([])
+            // tabelaResultadoProduto([])
+            // setResultadoProduto([])
+            console.log(valorTabela)
+            // console.log(resultadoProduto)
+            // console.log(tabelaResultadoProduto)
+            // console.log(consulta)
+            // console.log(values)    
+        }
     };
 
 
@@ -256,7 +258,7 @@ function RegistrarSolicitacao() {
                                 <Form.Control
                                     type="text"
                                     placeholder="Digite o nome do setor"
-                                    onChange={(e) => setSetor(e.target.value)}
+                                    onChange={handleChangeValues}
                                     name='setor'
                                     disabled={!isEditing}
                                 />
@@ -265,7 +267,7 @@ function RegistrarSolicitacao() {
                     </Row>
                     <Button
                         variant="primary"
-                        // onClick={!resultadoProduto ? '' : addProduto(resultadoProduto)}
+                        onClick={(e) => addProduto(resultadoProduto)}
                     // onClick={s}
                     >
                         Adicionar
