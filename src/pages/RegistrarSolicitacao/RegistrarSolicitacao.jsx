@@ -3,7 +3,7 @@ import Header from '../../components/Header'
 import Axios from "axios";
 
 import styles from "./RegistrarSolicitacao.module.scss";
-import { Container, Row, Col, Form, Button, Table } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Table, Modal, ListGroup } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -11,8 +11,15 @@ function RegistrarSolicitacao() {
     const [values, setValues] = useState({});
     const [consulta, setConsulta] = useState([])
     const [valorTabela, setValorTabela] = useState([])
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(true);
     const [setor, setSetor] = useState('');
+    const [nomeProduto, setNomeProduto] = useState('');
+    const [resultadoProduto, setResultadoProduto] = useState(0);
+    const [tabelaResultadoProduto, setTabelaResultadoProduto] = useState([]);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
 
     const handleChangeValues = (value) => {
@@ -20,7 +27,14 @@ function RegistrarSolicitacao() {
             ...data,
             [value.target.name]: value.target.value,
         }));
+        console.log(values)
     };
+
+    const mudarValorResultadoProduto = (value) => {
+        setResultadoProduto(value)
+        console.log(resultadoProduto)
+        handleClose()
+    }
 
     const produtos = [
         { id: 1, nome: 'Produto 1', unidadeMedida: 'kg', quantidade: 5 },
@@ -58,28 +72,32 @@ function RegistrarSolicitacao() {
     };
 
     const consultarProduto = () => {
-        if(!values.produto || !values.qtd) {
-            console.log(values)
-            toast.error('Preencha todos os campos')
-        } else {
-            Axios.get('http://localhost:8080/consultar-produto', {
-                params: {
-                    produto: values.produto
-                }
-            }).then(({data}) => {
-                // console.log(data)
-                if(!data.length) {
-                    return toast.error('produto não encontrado, por favor digite um código válido.')
-                } else {
-                    return addProduto(data[0])
-                }
-    
-            }).catch((err) => {
-                console.log(err)
-            })
-        }
-       
+        // if (!nomeProduto) {
+        //     console.log(values)
+        //     toast.error('Preencha todos os campos')
+        // } else {
+
+        // }
+
+        Axios.get('http://localhost:8080/consultar-produto', {
+            params: {
+                produto: nomeProduto
+            }
+        }).then(({ data }) => {
+            setTabelaResultadoProduto(data)
+            console.log(data)
+            if (!data.length) {
+                return toast.error('produto não encontrado, por favor digite novamente')
+            } //else {
+            //     return addProduto(data[0])
+            // }
+
+        }).catch((err) => {
+            console.log(err)
+        })
     }
+
+
 
     // INTERAÇÕES
     const verificarProdutoNaTabela = (value) => {
@@ -89,33 +107,99 @@ function RegistrarSolicitacao() {
     const verifica = (value) => verificarProdutoNaTabela(value)
 
     const addProduto = (value) => {
-        if(!values || !setor) {
-            return toast.error('preencha todos os campos')
-        } if(value.qtd < values.qtd) {
-            return toast.error(`A quantidade solicitada é superior ao estoque, limite ${value.qtd}`)
-        } if(verifica(value.id_produto)) {
-            return toast.error(`O produto já estar na lista`)
-        }  else {
-            setConsulta(value)
-            setValorTabela((data) => [...data, {id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd}])
-            // setValues([])
-            console.log(valorTabela)
-            console.log(setor)
-            console.log(consulta)
-            console.log(values)
-        }
+        setConsulta(value)
+        setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd }])
+        // setValues([])
+        console.log(valorTabela)
+        console.log(setor)
+        console.log(consulta)
+        console.log(values)
+
+        // if (!values.qtd || !setor) {
+        //     return toast.error('preencha todos os campos')
+        // } 
+        // if (value.qtd < values.qtd) {
+        //     return toast.error(`A quantidade solicitada é superior ao estoque, limite ${value.qtd}`)
+        // } if (verifica(value.id_produto)) {
+        //     return toast.error(`O produto já estar na lista`)
+        // } else {
+ 
+        // }
     };
-    
+
 
     const deletarItemTabela = (value) => {
         const attTabela = valorTabela.filter((item) => item.id_produto !== value)
         setValorTabela(attTabela)
     }
 
+
+
+
     return (
         <>
             <ToastContainer />
             <Header url="/" />
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Pesquisar Produto</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Nome do Produto</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Digite aqui"
+                                autoFocus
+                                onChange={(e) => setNomeProduto(e.target.value)}
+                            />
+                        </Form.Group>
+                        <Table
+                            striped
+                            bordered
+                            hover
+                            >
+                            <thead>
+                                <tr>
+                                    <th>Nome Produto</th>
+                                    <th>Uni. Medida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tabelaResultadoProduto.map((produto) => (
+                                    <tr key={produto.id_produto}>
+                                        <td>{produto.nome}</td>
+                                        <td>{produto.medida}</td>
+                                        <td>
+                                            <Button
+                                                variant="success"
+                                                size="sm"
+                                                onClick={(e) => mudarValorResultadoProduto(produto)}
+                                               >
+                                                Selecionar
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        variant="secondary"
+                        onClick={handleClose}>
+                        Fechar
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={consultarProduto}>
+                        Pesquisar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <Container className={styles.container}>
                 <Form className={styles.form}>
                     <h3>Registrar Solicitação</h3>
@@ -136,11 +220,12 @@ function RegistrarSolicitacao() {
                     <Row>
                         <Col xs={12} md={6} lg={6}>
                             <Form.Group controlId="formNumProduto">
-                                <Form.Label>Nº do Produto</Form.Label>
+                                <Form.Label>Produto</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Digite o número do produto"
-                                    onChange={handleChangeValues}
+                                    placeholder="Clique aqui"
+                                    onClick={handleShow}
+                                    value={resultadoProduto.nome}
                                     name='produto'
                                     disabled={!isEditing}
                                 />
@@ -153,7 +238,7 @@ function RegistrarSolicitacao() {
                                 </Form.Label>
                                 <Form.Control
                                     type="number"
-                                    placeholder={!consulta[0] ? 'pesquisando...': `disponivel ${consulta[0].qtd}`}
+                                    placeholder={!resultadoProduto ? 'pesquisando...' : `disponivel ${resultadoProduto.qtd}`}
                                     onChange={handleChangeValues}
                                     // value={values.qtd}
                                     name='qtd'
@@ -180,7 +265,7 @@ function RegistrarSolicitacao() {
                     </Row>
                     <Button
                         variant="primary"
-                        onClick={consultarProduto}
+                        // onClick={!resultadoProduto ? '' : addProduto(resultadoProduto)}
                     // onClick={s}
                     >
                         Adicionar
