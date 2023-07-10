@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
-const { format } = require('date-fns')
+const { format } = require('date-fns');
 
 // CONEXÃO BANCO DE DADOS
 const db = mysql.createPool({
@@ -42,8 +42,8 @@ app.get("/", (req, res) => {
 })
 
 
-app.post("/consultar", (req, res) => {
-    const { ordem } = req.body;
+app.get("/consultar", (req, res) => {
+    const { ordem } = req.query;
 
     const SQL = `select est_ordem_de_compra.valor_ordem as valor, est_ordem_de_compra.num_ordem_comp as ordem, est_ordem_de_compra.data_recebimento, est_fornecedor.razao_social, est_ordem_de_compra.cnpj_fornecedor 
     as cnpj, est_fornecedor.cnae from est_fornecedor, est_ordem_de_compra , est_item_ordem_de_compra where est_ordem_de_compra.num_ordem_comp = ${ordem}
@@ -63,8 +63,6 @@ app.post("/consultar", (req, res) => {
     });
 
 });
-
-
 
 app.get('/confirmar', (req, res) => {
     const { ordem } = req.query;
@@ -106,7 +104,6 @@ app.get('/ordem', (req, res) => {
     })
 })
 
-
 app.get('/profissional', (req, res) => {
     const { profissional } = req.query;
 
@@ -122,10 +119,7 @@ app.get('/profissional', (req, res) => {
 app.get('/consultar-produto', (req, res) => {
     const { produto } = req.query;
 
-    // const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd, produto.id_produto from est_lote as lote
-    // inner join est_produto as produto on lote.id_produto = ${produto} and produto.id_produto = ${produto} order by qtd desc limit 1;`
-
-    const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd, produto.id_produto,
+    const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, MAX(lote.qtd_produto) as qtd, produto.id_produto,
     lote.id_lote as lote, lote.cnpj, lote.num_ordem_comp as ordem, lote.data_vencimento as vencimento 
     from est_lote as lote inner join est_produto as produto on produto.nome_prod like "%${produto}%"
     and produto.nome_prod like "%${produto}%" where lote.id_produto = produto.id_produto order by qtd desc;`
@@ -136,6 +130,43 @@ app.get('/consultar-produto', (req, res) => {
         } else res.send(result)
     })
 })
+
+app.get("/visualizar-solicitacao",(req, res) => {
+
+    const SQL = `select solicitacao.id_solicitacao, solicitacao.nome_setor as setor, profissional.nome_profissional as solicitante from est_registro_solicitacao as solicitacao
+    inner join ag_profissional as  profissional on solicitacao.id_profissional = profissional.id_profissional 
+    where solicitacao.atendida = 0;`
+
+    db.query(SQL, (err, result) => {
+        if(result) {
+            console.log(result)
+            res.send(result)
+        } else {
+            console.log(err)
+            res.send(err)
+        }
+    })
+})
+
+app.get('/consultar-solicitacao', (req, res) => {
+    const { data } = req.query;
+
+    console.log(data)
+    const SQL = `select item.id_produto, item.qtd_produto as qtd, produto.nome_prod as nome, produto.unidade_medida as medida, 
+    solicitacao.id_solicitacao from est_item_solicitacao as item
+    inner join est_produto as produto on item.id_produto = produto.id_produto 
+    inner join est_registro_solicitacao as solicitacao on solicitacao.id_solicitacao = item.id_solicitacao 
+    where solicitacao.id_solicitacao = ${data} and solicitacao.atendida = 0;`
+
+    db.query(SQL,(err, result) => {
+        if(result) {
+            res.send(result)
+        } else {
+            res.send(err)
+        }
+    })
+})
+
 
 app.post("/cadastrar-lote", (req, res) => {
     // const novoIdLote = resultado[0].id_lote + 1;
@@ -148,9 +179,6 @@ app.post("/cadastrar-lote", (req, res) => {
     for (let i = 0; i < data.length; i++) {
         const produtoAtual = data[i];
 
-        // const SQL = `select est_lote.id_lote, item_ordem_de_compra.unidade_medida from lote inner join item_ordem_de_compra on lote.id_produto = item_ordem_de_compra.id_produto where lote.id_produto = ${produtoAtual.id_produto} and item_ordem_de_compra.id_produto = ${produtoAtual.id_produto};
-        // `;
-
         const {
             id_produto,
             num_ordem_comp,
@@ -158,20 +186,12 @@ app.post("/cadastrar-lote", (req, res) => {
             data_vencimento,
             qtd_produto
         } = produtoAtual
-        // const v = new Date(data_vencimento)
-        // const vencimento = format(v, 'yyyy-MM-dd HH:mm:ss')
-        // console.log(vencimento)
 
-        // const SQL2 = `insert into lote values(default, ${id_produto}, ${num_ordem_comp}, ${cnpj_fornecedor},'${dataFormatada}', '${vencimento}', 'geral', ${qtd_produto}, ${qtd_produto});`
         const SQL2 = `insert into est_lote values(default, ${id_produto}, ${num_ordem_comp}, ${cnpj_fornecedor},
             '${dataFormatada}', '${data_vencimento}', 'fasiclin', ${qtd_produto});
             update est_ordem_de_compra set data_recebimento = ${dataFormatada} where num_ordem_comp = ${num_ordem_comp};`
 
-        db.query(SQL2, (err, result) => {
-            // if (err) {
-            //     console.log(err)
-            // } else console.log(result)
-        })
+        db.query(SQL2)
 
     };
     const SQL3 = `update est_ordem_de_compra set data_recebimento = '${dataFormatada}' where num_ordem_comp = ${data[0].num_ordem_comp};`;
@@ -181,9 +201,9 @@ app.post("/cadastrar-lote", (req, res) => {
 
 app.post("/finalizar-solicitacao", (req, res) => {
     const { data } = req.body;
-    const { values, valorTabela } = data
+    const { values } = data
 
-    const SqlSolicitacao = `INSERT INTO est_registro_solicitacao VALUES (default, ${values.id_profissional}, now(), '');`
+    const SqlSolicitacao = `INSERT INTO est_registro_solicitacao VALUES (default, ${values.id_profissional}, now(), '${values.setor}', 0);`
 
     db.query(SqlSolicitacao, (err, result) => {
         if (result) {
@@ -225,24 +245,29 @@ app.post("/novo-lote", (req, res) => {
         VALUES (default, ${id_produto}, ${ordem}, ${cnpj}, now(), '${VencimentoFormatado}','${values.setor}', ${qtd});
         `
 
-        // const SqlItemSolicitacao = `INSER INTO est_item_solicitacao VALUES
-        //  (default,${id_solicitacao}, ${id_produto}, ${qtd});
-        
-        //  UPDATE est_lote SET qtd_produto = ${qtd} where id_lote = ${lote}
-        //  `
-
-
-        // const SqlNovoLote = `INSERT INTO est_lote
-        // VALUES (default, ${id_produto}, ${ordem}, ${cnpj}, now(), ${VencimentoFormatado}, ${values.setor}, ${qtd});`
-
-        db.query(SqlItemSolicitacao, (err, result) => {
-            if (result) {
-                console.log(result)
-                res.send(result)
-            } console.log(err)
-        })
+        db.query(SqlItemSolicitacao)
 
     };
+})
+
+app.post('/atender-solicitacao', (req, res) => {
+    const { data }  = req.body;
+
+    console.log(data)
+
+    const SQL = `update est_registro_solicitacao set 
+    atendida = 1
+    where id_solicitacao = ${data};`
+
+    db.query(SQL, (err, result) => {
+        if(result) {
+            console.log(result)
+            res.send(result)
+        } else {
+            console.log(err)
+            res.send(err)
+        }
+    })
 })
 
 //PORTAS

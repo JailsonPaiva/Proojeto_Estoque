@@ -35,9 +35,11 @@ function CadastrarOrdem() {
     if (!values.ordem) {
       toast.error('O campo de "Nº ORDEM" é inválido.');
     } else {
-      Axios.post("http://localhost:8080/consultar", {
-        ordem: values.ordem
-      }).then((response) => {
+      Axios.get("http://localhost:8080/consultar", {
+        params: {
+            ordem: values.ordem
+        }
+    }).then((response) => {
         const data = response.data
 
        /* if (!data[0].length || data[0].length <= 0) {

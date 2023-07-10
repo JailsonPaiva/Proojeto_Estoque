@@ -47,77 +47,98 @@ function RegistrarSolicitacao() {
 
     // ROTAS
     const consultarProfissional = async () => {
-        await Axios.get('http://localhost:8080/profissional', {
-            params: {
-                profissional: values.solicitante
-            }
-        }).then(({ data }) => {
-            console.log(data)
-            const permisao = data[0].retirada_estoque
+        if (!values) {
+            return toast.error('Digite o nome do solicitante')
+        } else {
+            await Axios.get('http://localhost:8080/profissional', {
+                params: {
+                    profissional: values.solicitante
+                }
+            }).then(({ data }) => {
+                if (!data.length) {
+                    return toast.error('Nenhum profissional encontrado, tente novamente.')
+                } else {
+                    console.log(data)
+                    const permisao = data[0].retirada_estoque
 
-            setValues((value) => ({
-                ...value,
-                ['id_profissional']: data[0].id_profissional
-            }));
+                    setValues((value) => ({
+                        ...value,
+                        ['id_profissional']: data[0].id_profissional
+                    }));
 
-            if (!permisao || permisao === 0) {
-                toast.error('Solicitante não tem permissão para realizar retirada no estoque')
-                setIsEditing(false)
-            } else {
-                toast.success('Solicitante com permissão')
-                setIsEditing(true);
-            }
-            // console.log(data);
-        }).catch((err) => {
-            console.log(err);
-        });
+                    if (!permisao || permisao === 0) {
+                        toast.error('Solicitante não tem permissão para realizar retirada no estoque')
+                        setIsEditing(false)
+                    } else {
+                        toast.success('Solicitante com permissão')
+                        setIsEditing(true);
+                    }
+                    // console.log(data);
+                }
+
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
     };
 
     const consultarProduto = () => {
-        // if (!nomeProduto) {
-        //     console.log(values)
-        //     toast.error('Preencha todos os campos')
-        // } else {
+        if (!nomeProduto) {
+            // console.log(values)
+            toast.error('Digite o nome de um produto.')
+        } else {
+            Axios.get('http://localhost:8080/consultar-produto', {
+                params: {
+                    produto: nomeProduto
+                }
+            }).then(({ data }) => {
+                setTabelaResultadoProduto(data);
+                console.log(data);
+                if (!data.length) {
+                    return toast.error('produto não encontrado, por favor digite novamente');
+                } //else {
+                //     return addProduto(data[0])
+                // }
 
-        // }
-
-        Axios.get('http://localhost:8080/consultar-produto', {
-            params: {
-                produto: nomeProduto
-            }
-        }).then(({ data }) => {
-            setTabelaResultadoProduto(data);
-            console.log(data);
-            if (!data.length) {
-                return toast.error('produto não encontrado, por favor digite novamente');
-            } //else {
-            //     return addProduto(data[0])
-            // }
-
-        }).catch((err) => {
-            console.log(err)
-        });
+            }).catch((err) => {
+                console.log(err)
+            });
+        }
     };
 
+
     const finalizar = () => {
-        Axios.post('http://localhost:8080/finalizar-solicitacao', {
-            data: {
-                values: values,
-                valorTabela: valorTabela
-            }
-        }).then((response) => {
-            console.log(response)
-            Axios.post('http://localhost:8080/novo-lote', {
+        if (!valorTabela) {
+            return toast.error('Adicione um produto a sua solicitação.')
+        } else {
+            Axios.post('http://localhost:8080/finalizar-solicitacao', {
                 data: {
                     values: values,
                     valorTabela: valorTabela
                 }
-            }).then((response) => console.log(response)).catch((err) => console.log(err))
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
+            }).then((response) => {
+                console.log(response)
+                Axios.post('http://localhost:8080/novo-lote', {
+                    data: {
+                        values: values,
+                        valorTabela: valorTabela
+                    }
+                }).then((response) => {
+                    console.log(response)
+                }).catch((err) => {
+                    console.log(err)
+                    return toast.error('Ocorreu um erro ao tentar realizar a sua solicitação, por favor tente novamente.');
+                })
 
+                if (response.status === 200) {
+                    return toast.success('Solicitação criada com sucesso!');
+                } return toast.error('Ocorreu um erro ao tentar realizar a sua solicitação, por favor tente novamente.')
+            }).catch((err) => {
+                console.log(err)
+                return toast.error('Ocorreu um erro ao tentar realizar a sua solicitação, por favor tente novamente.');
+            })
+        }
+    }
 
 
     // INTERAÇÕES
@@ -136,17 +157,13 @@ function RegistrarSolicitacao() {
         } if (verifica(value.id_produto)) {
             return toast.error(`O produto já estar na lista`)
         } else {
-            setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd, ordem: resultadoProduto.ordem, vencimento: resultadoProduto.vencimento, cnpj: resultadoProduto.cnpj, lote: resultadoProduto.lote, qtd_lote: resultadoProduto.qtd }])
-            setTabelaResultadoProduto([])
-            // setValues([])
-            // tabelaResultadoProduto([])
-            // setResultadoProduto([])
-            console.log(valorTabela)
-            // console.log(resultadoProduto)
-            // console.log(tabelaResultadoProduto)
-            // console.log(consulta)
-            console.log(values)
-        }
+            setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd, ordem: resultadoProduto.ordem, vencimento: resultadoProduto.vencimento, cnpj: resultadoProduto.cnpj, lote: resultadoProduto.lote, qtd_lote: resultadoProduto.qtd }]);
+
+            setTabelaResultadoProduto([]);
+
+            console.log(valorTabela);
+            console.log(values);
+        };
     };
 
 
@@ -265,8 +282,6 @@ function RegistrarSolicitacao() {
                                     // value={values.qtd}
                                     name='qtd'
                                     disabled={!isEditing}
-                                    min={0}
-                                // max={values.qtd}
                                 />
                             </Form.Group>
                         </Col>
@@ -291,16 +306,6 @@ function RegistrarSolicitacao() {
                                 <option value="NPJ">NPJ</option>
                                 <option value="Medicina">Medicina</option>
                             </Form.Select>
-                            {/* <Form.Group controlId="formNomeSetor">
-                                <Form.Label>Nome do Setor</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Digite o nome do setor"
-                                    onChange={handleChangeValues}
-                                    name='setor'
-                                    disabled={!isEditing}
-                                />
-                            </Form.Group> */}
                         </Col>
                     </Row>
                     <Button

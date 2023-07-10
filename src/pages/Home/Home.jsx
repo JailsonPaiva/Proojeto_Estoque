@@ -108,11 +108,15 @@ function Home() {
                         <Row>
                             <Button variant="primary">
                                 <Link to="/solicitacao">
-                                    Reposição de Materiais
+                                    Solicitar Materiais
                                 </Link>
                             </Button>
 
-                            <Button variant="primary">Fechamento de Balanço</Button>
+                            <Button variant="primary">
+                                <Link to="/visualizar-solicitacao">
+                                    Visualizar Solicitações
+                                </Link>
+                            </Button>
                         </Row>
                     </section>
                 </section>
