@@ -107,6 +107,12 @@ function RegistrarSolicitacao() {
             }
         }).then((response) => {
             console.log(response)
+            Axios.post('http://localhost:8080/novo-lote', {
+                data: {
+                    values: values,
+                    valorTabela: valorTabela
+                }
+            }).then((response) => console.log(response)).catch((err) => console.log(err))
         }).catch((err) => {
             console.log(err)
         })
@@ -130,8 +136,8 @@ function RegistrarSolicitacao() {
         } if (verifica(value.id_produto)) {
             return toast.error(`O produto já estar na lista`)
         } else {
-            setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd, ordem: resultadoProduto.ordem, vencimento: resultadoProduto.vencimento, cnpj: resultadoProduto.cnpj, lote: resultadoProduto.lote }])
-            setTabelaResultadoProduto([{}])
+            setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd, ordem: resultadoProduto.ordem, vencimento: resultadoProduto.vencimento, cnpj: resultadoProduto.cnpj, lote: resultadoProduto.lote, qtd_lote: resultadoProduto.qtd }])
+            setTabelaResultadoProduto([])
             // setValues([])
             // tabelaResultadoProduto([])
             // setResultadoProduto([])

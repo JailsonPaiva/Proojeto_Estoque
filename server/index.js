@@ -128,7 +128,7 @@ app.get('/consultar-produto', (req, res) => {
     const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd, produto.id_produto,
     lote.id_lote as lote, lote.cnpj, lote.num_ordem_comp as ordem, lote.data_vencimento as vencimento 
     from est_lote as lote inner join est_produto as produto on produto.nome_prod like "%${produto}%"
-    and produto.nome_prod like "%${produto}%" order by qtd desc limit 4;`
+    and produto.nome_prod like "%${produto}%" where lote.id_produto = produto.id_produto order by qtd desc;`
 
     db.query(SQL, (err, result) => {
         if (err) {
@@ -145,7 +145,7 @@ app.post("/cadastrar-lote", (req, res) => {
 
     const data = req.body.data;
 
-    for (let i = 0; i <= data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         const produtoAtual = data[i];
 
         // const SQL = `select est_lote.id_lote, item_ordem_de_compra.unidade_medida from lote inner join item_ordem_de_compra on lote.id_produto = item_ordem_de_compra.id_produto where lote.id_produto = ${produtoAtual.id_produto} and item_ordem_de_compra.id_produto = ${produtoAtual.id_produto};
@@ -185,24 +185,21 @@ app.post("/finalizar-solicitacao", (req, res) => {
 
     const SqlSolicitacao = `INSERT INTO est_registro_solicitacao VALUES (default, ${values.id_profissional}, now(), '');`
 
-    db.query(SqlSolicitacao, (res, err) => {
-        if (res) {
-            // console.log(res)
+    db.query(SqlSolicitacao, (err, result) => {
+        if (result) {
+            console.log(result)
+            res.send(result)
         } console.log(err)
     })
+})
 
-    const SqlIdSolicitaca = `select id_solicitacao from est_registro_solicitacao order by id_solicitacao desc limit 1;`
+app.post("/novo-lote", (req, res) => {
+    const { data } = req.body;
+    const { values, valorTabela } = data
 
-    db.query(SqlIdSolicitaca, (response, err) => {
-        if (response) {
-            console.log(response) 
-        } console.log(err)
-    })
-
-
-    for (let i = 0; i <= valorTabela.length; i++) {
+    for (let i = 0; i < valorTabela.length; i++) {
         const produtoAtual = valorTabela[i];
-        console.log(produtoAtual)
+        // console.log(produtoAtual)
 
         const {
             id_produto,
@@ -210,8 +207,11 @@ app.post("/finalizar-solicitacao", (req, res) => {
             lote,
             ordem,
             cnpj,
-            vencimento
+            vencimento,
+            qtd_lote
         } = produtoAtual
+
+        const qtd_atualizada = qtd_lote - qtd
 
         const v = new Date(vencimento)
         const VencimentoFormatado = format(v, 'yyyy-MM-dd HH:mm:ss')
@@ -219,7 +219,10 @@ app.post("/finalizar-solicitacao", (req, res) => {
         const SqlItemSolicitacao = `INSERT INTO est_item_solicitacao VALUES
         (default,(select id_solicitacao from est_registro_solicitacao order by id_solicitacao desc limit 1), ${id_produto}, ${qtd});
 
-        UPDATE est_lote SET qtd_produto = ${qtd} where id_lote = ${lote}
+        UPDATE est_lote SET qtd_produto = ${qtd_atualizada} where id_lote = ${lote};
+
+        INSERT INTO est_lote
+        VALUES (default, ${id_produto}, ${ordem}, ${cnpj}, now(), '${VencimentoFormatado}','${values.setor}', ${qtd});
         `
 
         // const SqlItemSolicitacao = `INSER INTO est_item_solicitacao VALUES
@@ -229,23 +232,18 @@ app.post("/finalizar-solicitacao", (req, res) => {
         //  `
 
 
-        const SqlNovoLote = `INSERT INTO est_lote
-        VALUES (default, ${id_produto}, ${ordem}, ${cnpj}, now(), ${VencimentoFormatado}, ${values.setor}, ${qtd})`
+        // const SqlNovoLote = `INSERT INTO est_lote
+        // VALUES (default, ${id_produto}, ${ordem}, ${cnpj}, now(), ${VencimentoFormatado}, ${values.setor}, ${qtd});`
 
-        db.query(SqlItemSolicitacao, SqlNovoLote, (res, err) => {
-            if (res) {
-                console.log(res)
+        db.query(SqlItemSolicitacao, (err, result) => {
+            if (result) {
+                console.log(result)
+                res.send(result)
             } console.log(err)
         })
 
     };
 })
-
-// app.post('finalizar-solicitacao', (req, res) => {
-//     const data = req.body.data;
-
-//     const SQL = 
-// })
 
 //PORTAS
 app.listen(8080, () => {
