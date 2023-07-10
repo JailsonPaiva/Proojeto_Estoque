@@ -34,6 +34,7 @@ function RegistrarSolicitacao() {
         setResultadoProduto(value)
         // setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd }])
         // console.log(resultadoProduto)
+        console.log(resultadoProduto)
         handleClose()
     }
 
@@ -58,7 +59,7 @@ function RegistrarSolicitacao() {
                 ...value,
                 ['id_profissional']: data[0].id_profissional
             }));
-            
+
             if (!permisao || permisao === 0) {
                 toast.error('Solicitante não tem permissão para realizar retirada no estoque')
                 setIsEditing(false)
@@ -85,14 +86,27 @@ function RegistrarSolicitacao() {
                 produto: nomeProduto
             }
         }).then(({ data }) => {
-            setTabelaResultadoProduto(data)
-            console.log(data)
+            setTabelaResultadoProduto(data);
+            console.log(data);
             if (!data.length) {
-                return toast.error('produto não encontrado, por favor digite novamente')
+                return toast.error('produto não encontrado, por favor digite novamente');
             } //else {
             //     return addProduto(data[0])
             // }
 
+        }).catch((err) => {
+            console.log(err)
+        });
+    };
+
+    const finalizar = () => {
+        Axios.post('http://localhost:8080/finalizar-solicitacao', {
+            data: {
+                values: values,
+                valorTabela: valorTabela
+            }
+        }).then((response) => {
+            console.log(response)
         }).catch((err) => {
             console.log(err)
         })
@@ -103,20 +117,20 @@ function RegistrarSolicitacao() {
     // INTERAÇÕES
     const verificarProdutoNaTabela = (value) => {
         return valorTabela.some((item) => item.id_produto === value)
-    }
+    };
 
-    const verifica = (value) => verificarProdutoNaTabela(value)
+    const verifica = (value) => verificarProdutoNaTabela(value);
 
     const addProduto = (value) => {
         if (!values.qtd || !values.setor) {
             return toast.error('preencha todos os campos')
-        } 
+        }
         if (value.qtd < values.qtd) {
             return toast.error(`A quantidade solicitada é superior ao estoque, limite ${value.qtd}`)
         } if (verifica(value.id_produto)) {
             return toast.error(`O produto já estar na lista`)
-        } else {          
-            setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd, ordem: resultadoProduto.ordem, vencimento: resultadoProduto.vencimento, cnpj: resultadoProduto.cnpj }])
+        } else {
+            setValorTabela((data) => [...data, { id_produto: value.id_produto, nome: value.nome, medida: value.medida, qtd: values.qtd, ordem: resultadoProduto.ordem, vencimento: resultadoProduto.vencimento, cnpj: resultadoProduto.cnpj, lote: resultadoProduto.lote }])
             setTabelaResultadoProduto([{}])
             // setValues([])
             // tabelaResultadoProduto([])
@@ -125,7 +139,7 @@ function RegistrarSolicitacao() {
             // console.log(resultadoProduto)
             // console.log(tabelaResultadoProduto)
             // console.log(consulta)
-            // console.log(values)    
+            console.log(values)
         }
     };
 
@@ -161,7 +175,7 @@ function RegistrarSolicitacao() {
                             striped
                             bordered
                             hover
-                            >
+                        >
                             <thead>
                                 <tr>
                                     <th>Nome Produto</th>
@@ -178,7 +192,7 @@ function RegistrarSolicitacao() {
                                                 variant="success"
                                                 size="sm"
                                                 onClick={(e) => mudarValorResultadoProduto(produto)}
-                                               >
+                                            >
                                                 Selecionar
                                             </Button>
                                         </td>
@@ -253,7 +267,25 @@ function RegistrarSolicitacao() {
                     </Row>
                     <Row>
                         <Col xs={12} md={12}>
-                            <Form.Group controlId="formNomeSetor">
+                            <Form.Select
+                                aria-label="Default select example"
+                                value={values.setor}
+                                name='setor'
+                                onChange={handleChangeValues}
+                                disabled={!isEditing}>
+
+                                <option>Selecione o Setor</option>
+                                <option value="Biomedicina">Biomedicina</option>
+                                <option value="Enfermagem">Enfermagem</option>
+                                <option value="Estética">Estética</option>
+                                <option value="Fisioterapia">Fisioterapia</option>
+                                <option value="Nutrição">Nutrição</option>
+                                <option value="Odontologia">Odontologia</option>
+                                <option value="Psicologia">Psicologia</option>
+                                <option value="NPJ">NPJ</option>
+                                <option value="Medicina">Medicina</option>
+                            </Form.Select>
+                            {/* <Form.Group controlId="formNomeSetor">
                                 <Form.Label>Nome do Setor</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -262,7 +294,7 @@ function RegistrarSolicitacao() {
                                     name='setor'
                                     disabled={!isEditing}
                                 />
-                            </Form.Group>
+                            </Form.Group> */}
                         </Col>
                     </Row>
                     <Button
@@ -301,7 +333,7 @@ function RegistrarSolicitacao() {
                             </tr>
                         ))}
                     </tbody>
-                    <Button variant="success" disabled={!isEditing}>
+                    <Button variant="success" disabled={!isEditing} onClick={finalizar}>
                         Finalizar
                     </Button>
                 </Table>
