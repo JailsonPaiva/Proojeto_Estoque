@@ -48,8 +48,10 @@ function CadastrarOrdem() {
         } if (data[0][0].data_recebimento !== null) {
           const recebimento = formatarData(data[0][0].data_recebimento)
           const hoje = getCurrentDate(new Date())
-          // console.log(recebimento, hoje)
-          if (recebimento <= hoje) {
+          console.log(recebimento, hoje)
+          if (recebimento <=
+            
+            hoje) {
             toast.error('Essa ordem já foi registrada.');
             limpa()
           }
@@ -60,10 +62,7 @@ function CadastrarOrdem() {
           maskCnpj(cnpj)
           setNewCnpj(maskCnpj(cnpj))
         }
-      }).catch((err) => {
-        toast.error('Ocorreu um erro ao fazer a consulta');
       })
-      // console.log(newValues[1][0].total)
     }
 
 

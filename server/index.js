@@ -172,7 +172,7 @@ app.post("/cadastrar-lote", (req, res) => {
     // const novoIdLote = resultado[0].id_lote + 1;
     const dataAtual = new Date()
     const dataFormatada = format(dataAtual, 'yyyy-MM-dd')
-    // console.log(dataFormatada)
+    console.log(dataFormatada)
 
     const data = req.body.data;
 
@@ -195,8 +195,14 @@ app.post("/cadastrar-lote", (req, res) => {
 
     };
     const SQL3 = `update est_ordem_de_compra set data_recebimento = '${dataFormatada}' where num_ordem_comp = ${data[0].num_ordem_comp};`;
-    db.query(SQL3);
-    res.send('ok')
+    db.query(SQL3,(err, result) => {
+        if(result) {
+            res.send('ok')
+        } else {
+            res.send(err)
+        }
+    });
+    
 })
 
 app.post("/finalizar-solicitacao", (req, res) => {
@@ -248,6 +254,8 @@ app.post("/novo-lote", (req, res) => {
         db.query(SqlItemSolicitacao)
 
     };
+
+    res.status(200).send('ok')
 })
 
 app.post('/atender-solicitacao', (req, res) => {

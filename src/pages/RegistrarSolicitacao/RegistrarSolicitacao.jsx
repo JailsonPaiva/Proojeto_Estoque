@@ -6,6 +6,7 @@ import styles from "./RegistrarSolicitacao.module.scss";
 import { Container, Row, Col, Form, Button, Table, Modal, ListGroup } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 function RegistrarSolicitacao() {
     const [values, setValues] = useState({});
@@ -16,10 +17,28 @@ function RegistrarSolicitacao() {
     const [nomeProduto, setNomeProduto] = useState('');
     const [resultadoProduto, setResultadoProduto] = useState([]);
     const [tabelaResultadoProduto, setTabelaResultadoProduto] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
     const [show, setShow] = useState(false);
+    const navigate = useNavigate('')
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const itemsPerPage = 5;
+    // Calcular índices dos itens a serem exibidos na página atual
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    // Obter os itens da página atual
+    const currentPageItems = valorTabela.slice(startIndex, endIndex);
+
+    // Calcular o número total de páginas
+    const totalPages = Math.ceil(valorTabela.length / itemsPerPage);
+
+    // Função para mudar a página atual
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
 
     const handleChangeValues = (value) => {
@@ -36,6 +55,10 @@ function RegistrarSolicitacao() {
         // console.log(resultadoProduto)
         console.log(resultadoProduto)
         handleClose()
+    }
+
+    const voltarHome = () => {
+        setTimeout(() => navigate('/'), 3000)
     }
 
     // const mudarValorInforProfissional = (value) => { 
@@ -117,22 +140,26 @@ function RegistrarSolicitacao() {
                     valorTabela: valorTabela
                 }
             }).then((response) => {
-                console.log(response)
+                // console.log(response)
                 Axios.post('http://localhost:8080/novo-lote', {
                     data: {
                         values: values,
                         valorTabela: valorTabela
                     }
-                }).then((response) => {
-                    console.log(response)
+                }).then((res) => {
+                    console.log(res)
+
+                    if (res.status === 200) {
+                        toast.success('Solicitação criada com sucesso! qaui');
+                        voltarHome()
+    
+                    } else toast.error('Ocorreu um erro ao tentar realizar a sua solicitação, por favor tente novamente.');
+
                 }).catch((err) => {
                     console.log(err)
                     return toast.error('Ocorreu um erro ao tentar realizar a sua solicitação, por favor tente novamente.');
                 })
 
-                if (response.status === 200) {
-                    return toast.success('Solicitação criada com sucesso!');
-                } return toast.error('Ocorreu um erro ao tentar realizar a sua solicitação, por favor tente novamente.')
             }).catch((err) => {
                 console.log(err)
                 return toast.error('Ocorreu um erro ao tentar realizar a sua solicitação, por favor tente novamente.');
@@ -331,7 +358,7 @@ function RegistrarSolicitacao() {
                         </tr>
                     </thead>
                     <tbody>
-                        {valorTabela.map((produto) => (
+                        {currentPageItems.map((produto, index) => (
                             <tr key={produto.id_produto}>
                                 <td>{produto.nome}</td>
                                 <td>{produto.medida}</td>
@@ -344,9 +371,34 @@ function RegistrarSolicitacao() {
                             </tr>
                         ))}
                     </tbody>
-                    <Button variant="success" disabled={!isEditing} onClick={finalizar}>
-                        Finalizar
-                    </Button>
+
+                    <div>
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => handlePageChange(index + 1)}
+                                style={{
+                                    margin: '0.5rem',
+                                    padding: '0.5rem 1rem',
+                                    backgroundColor: currentPage === index + 1 ? '#0d6efd' : '#fff',
+                                    color: '#fff',
+                                    border: currentPage === index + 1 ? 'none' : '1px solid #ccc',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                }}
+                                disabled={currentPage === index + 1}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                    </div>
+
+                    <Row className="mt-2 mx-1">
+                        <Button variant="success" size="md" disabled={!isEditing} onClick={finalizar}>
+                            Finalizar
+                        </Button>
+                    </Row>
+                    
                 </Table>
             </Container>
         </>

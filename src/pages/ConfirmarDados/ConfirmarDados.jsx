@@ -173,8 +173,8 @@ function ConfirmarDados() {
                                 style={{
                                     margin: '0.5rem',
                                     padding: '0.5rem 1rem',
-                                    backgroundColor: currentPage === index + 1 ? 'green' : '#fff',
-                                    color: 'black',
+                                    backgroundColor: currentPage === index + 1 ? '#0d6efd' : '#fff',
+                                    color: '#fff',
                                     border: currentPage === index + 1 ? 'none' : '1px solid #ccc',
                                     borderRadius: '4px',
                                     cursor: 'pointer',
