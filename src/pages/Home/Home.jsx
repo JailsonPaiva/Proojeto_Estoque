@@ -112,7 +112,7 @@ function Home() {
                                 </Link>
                             </Button>
 
-                            <Button variant="primary">
+                            <Button variant="primary" size="sm">
                                 <Link to="/visualizar-solicitacao">
                                     Visualizar Solicitações
                                 </Link>

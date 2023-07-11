@@ -37,19 +37,19 @@ function CadastrarOrdem() {
     } else {
       Axios.get("http://localhost:8080/consultar", {
         params: {
-            ordem: values.ordem
+          ordem: values.ordem
         }
-    }).then((response) => {
+      }).then((response) => {
         const data = response.data
 
-       /* if (!data[0].length || data[0].length <= 0) {
+        if (!data[0].length || data[0].length <= 0) {
           toast.error('Não foi encontrado nenhuma ordem com esse numero.');
 
-        } */if (data[0][0].data_recebimento !== null) {
+        } if (data[0][0].data_recebimento !== null) {
           const recebimento = formatarData(data[0][0].data_recebimento)
           const hoje = getCurrentDate(new Date())
           // console.log(recebimento, hoje)
-          if(recebimento <= hoje) {
+          if (recebimento <= hoje) {
             toast.error('Essa ordem já foi registrada.');
             limpa()
           }
@@ -143,8 +143,8 @@ function CadastrarOrdem() {
   //     console.log(response)
   //   });
   // };
-  
-  
+
+
   const url = `/confirmar?ordem=${values.ordem}`
 
   return (
