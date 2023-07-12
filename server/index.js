@@ -45,8 +45,7 @@ app.get("/", (req, res) => {
 app.get("/consultar", (req, res) => {
     const { ordem } = req.query;
 
-    const SQL = `select est_ordem_de_compra.valor_ordem as valor, est_ordem_de_compra.num_ordem_comp as ordem, est_ordem_de_compra.data_recebimento, est_fornecedor.razao_social, est_ordem_de_compra.cnpj_fornecedor 
-    as cnpj, est_fornecedor.cnae from est_fornecedor, est_ordem_de_compra , est_item_ordem_de_compra where est_ordem_de_compra.num_ordem_comp = ${ordem}
+    const SQL = `select est_ordem_de_compra.valor_ordem as valor, est_ordem_de_compra.num_ordem_comp as ordem, est_ordem_de_compra.data_recebimento, est_fornecedor.razao_social, est_ordem_de_compra.cnpj_fornecedor as cnpj, est_ordem_de_compra.data_entrega, est_fornecedor.cnae from est_fornecedor, est_ordem_de_compra , est_item_ordem_de_compra where est_ordem_de_compra.num_ordem_comp = ${ordem}
     and est_item_ordem_de_compra.num_ordem_comp = ${ordem} and est_ordem_de_compra.cnpj_fornecedor = est_fornecedor.cnpj  limit 1;
     
     select sum(qtd_produto) as total from est_ordem_de_compra as ordem, est_item_ordem_de_compra as item where ordem.num_ordem_comp = ${ordem}
@@ -170,16 +169,16 @@ app.get('/consultar-solicitacao', (req, res) => {
 
 app.post("/cadastrar-lote", (req, res) => {
     // const novoIdLote = resultado[0].id_lote + 1;
-    const dataAtual = new Date()
-    const dataFormatada = format(dataAtual, 'yyyy-MM-dd')
-    console.log(dataFormatada)
+    // const dataAtual = new Date()
+    // const dataFormatada = format(dataAtual, 'yyyy-MM-dd')
+    // console.log(dataFormatada)
 
     const data = req.body.data;
 
     for (let i = 0; i < data.length; i++) {
-        const dataAtual = new Date()
-        const dataFormatada = format(dataAtual, 'yyyy-MM-dd')
-        console.log(dataFormatada)
+        // const dataAtual = new Date()
+        // const dataFormatada = format(dataAtual, 'yyyy-MM-dd')
+        // console.log(dataFormatada)
         const produtoAtual = data[i];
 
         const {
@@ -191,13 +190,13 @@ app.post("/cadastrar-lote", (req, res) => {
         } = produtoAtual
 
         const SQL2 = `insert into est_lote values(default, ${id_produto}, ${num_ordem_comp}, ${cnpj_fornecedor},
-            '${dataFormatada}', '${data_vencimento}', 'fasiclin', ${qtd_produto});
-            update est_ordem_de_compra set data_recebimento = ${dataFormatada} where num_ordem_comp = ${num_ordem_comp};`
+            now(), '${data_vencimento}', 'fasiclin', ${qtd_produto});
+            update est_ordem_de_compra set data_recebimento = now() where num_ordem_comp = ${num_ordem_comp};`
 
         db.query(SQL2)
 
     };
-    const SQL3 = `update est_ordem_de_compra set data_recebimento = '${dataFormatada}' where num_ordem_comp = ${data[0].num_ordem_comp};`;
+    const SQL3 = `update est_ordem_de_compra set data_recebimento = now() where num_ordem_comp = ${data[0].num_ordem_comp};`;
     db.query(SQL3,(err, result) => {
         if(result) {
             res.send('ok')

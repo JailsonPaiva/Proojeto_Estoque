@@ -44,24 +44,33 @@ function CadastrarOrdem() {
         console.log(response.data)
 
         if (!data[0].length || data[0].length <= 0) {
-          toast.error('Não foi encontrado nenhuma ordem com esse numero.');
+         return toast.error('Não foi encontrado nenhuma ordem com esse numero.');
 
         } if (data[0][0].data_recebimento !== null) {
           const recebimento = formatarData(data[0][0].data_recebimento)
           const hoje = getCurrentDate(new Date())
-          console.log(recebimento, hoje)
-          if (recebimento <=
-            
-            hoje) {
-            toast.error('Essa ordem já foi registrada.');
+          console.log(recebimento - hoje)
+          
+          if (recebimento <= hoje) {
             limpa()
+            return toast.error('Essa ordem já foi registrada.');
           }
+
+        } if (data[0][0].data_entrega > getCurrentDate(new Date())) {
+
+          setNewValues(data)
+          
+          const cnpj = data[0][0].cnpj
+          maskCnpj(cnpj)
+          setNewCnpj(maskCnpj(cnpj))
+          return toast.warning(`Essa ordem estar sendo entregue com atraso`);
+
         } else {
-          toast.success('Consulta realiza!');
           setNewValues(data)
           const cnpj = data[0][0].cnpj
           maskCnpj(cnpj)
           setNewCnpj(maskCnpj(cnpj))
+          return toast.success('Consulta realiza!');
         }
       })
     }
@@ -151,7 +160,7 @@ function CadastrarOrdem() {
     <>
       <ToastContainer />
 
-      <Header url="/" titulo='VERIFICAR ORDEM'/>
+      <Header url="/" titulo='VERIFICAR ORDEM' />
 
       <hr className={styles.hr} />
 
@@ -201,7 +210,7 @@ function CadastrarOrdem() {
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridState">
-              <Form.Label>Data da Entrega</Form.Label>
+              <Form.Label>Data de recebimento</Form.Label>
               <Form.Control
                 onChange={handleChangeValues}
                 placeholder='00/00/0000'

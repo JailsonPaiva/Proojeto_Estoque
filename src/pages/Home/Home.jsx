@@ -70,7 +70,7 @@ function Home() {
 
                 <section className={styles.tableContainer}>
 
-                    <Table responsive striped hover>
+                    <Table responsive striped hover bordered>
                         <thead>
                             <tr>
                                 <th>Nº DA ORDEM</th>
