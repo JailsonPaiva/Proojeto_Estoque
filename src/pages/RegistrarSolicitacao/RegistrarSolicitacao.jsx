@@ -150,7 +150,7 @@ function RegistrarSolicitacao() {
                     console.log(res)
 
                     if (res.status === 200) {
-                        toast.success('Solicitação criada com sucesso! qaui');
+                        toast.success('Solicitação criada com sucesso!');
                         voltarHome()
     
                     } else toast.error('Ocorreu um erro ao tentar realizar a sua solicitação, por favor tente novamente.');
@@ -205,7 +205,7 @@ function RegistrarSolicitacao() {
     return (
         <>
             <ToastContainer />
-            <Header url="/" />
+            <Header url="/" titulo='REGISTRAR SOLICITAÇÃO'/>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Pesquisar Produto</Modal.Title>
@@ -381,7 +381,7 @@ function RegistrarSolicitacao() {
                                     margin: '0.5rem',
                                     padding: '0.5rem 1rem',
                                     backgroundColor: currentPage === index + 1 ? '#0d6efd' : '#fff',
-                                    color: '#fff',
+                                    color: currentPage === index + 1 ? '#fff' : '#000',
                                     border: currentPage === index + 1 ? 'none' : '1px solid #ccc',
                                     borderRadius: '4px',
                                     cursor: 'pointer',

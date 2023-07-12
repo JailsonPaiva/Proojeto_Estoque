@@ -41,6 +41,7 @@ function CadastrarOrdem() {
         }
       }).then((response) => {
         const data = response.data
+        console.log(response.data)
 
         if (!data[0].length || data[0].length <= 0) {
           toast.error('Não foi encontrado nenhuma ordem com esse numero.');
@@ -150,7 +151,7 @@ function CadastrarOrdem() {
     <>
       <ToastContainer />
 
-      <Header url="/" />
+      <Header url="/" titulo='VERIFICAR ORDEM'/>
 
       <hr className={styles.hr} />
 

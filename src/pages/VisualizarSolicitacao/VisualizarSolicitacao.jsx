@@ -81,7 +81,7 @@ function VisualizarSolicitacao() {
     return (
         <>
             <ToastContainer />
-            <Header />
+            <Header url='/' titulo='VISUALIZAR SOLICITAÇÕES'/>
             <main className={styles.containerTabela}>
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
@@ -166,7 +166,7 @@ function VisualizarSolicitacao() {
                                 margin: '0.5rem',
                                 padding: '0.5rem 1rem',
                                 backgroundColor: currentPage === index + 1 ? '#0d6efd' : '#fff',
-                                color: '#fff',
+                                color:  currentPage === index + 1 ? '#fff' : '#000',
                                 border: currentPage === index + 1 ? 'none' : '1px solid #ccc',
                                 borderRadius: '4px',
                                 cursor: 'pointer',

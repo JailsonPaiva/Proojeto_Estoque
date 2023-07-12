@@ -11,7 +11,7 @@ function Header(props) {
                 <img src={logo} alt="Logo FASIPE" />
             </Link>
 
-            <h2>VERIFICAR ORDEM DE COMPRA</h2>
+            <h2>{props.titulo}</h2>
 
             <Link to={props.url}>
                 <i class="fa-solid fa-circle-arrow-left"></i>

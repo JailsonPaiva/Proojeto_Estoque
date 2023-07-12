@@ -119,7 +119,7 @@ app.get('/profissional', (req, res) => {
 app.get('/consultar-produto', (req, res) => {
     const { produto } = req.query;
 
-    const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, MAX(lote.qtd_produto) as qtd, produto.id_produto,
+    const SQL = `select produto.nome_prod as nome, produto.unidade_medida as medida, lote.qtd_produto as qtd, produto.id_produto,
     lote.id_lote as lote, lote.cnpj, lote.num_ordem_comp as ordem, lote.data_vencimento as vencimento 
     from est_lote as lote inner join est_produto as produto on produto.nome_prod like "%${produto}%"
     and produto.nome_prod like "%${produto}%" where lote.id_produto = produto.id_produto order by qtd desc;`
@@ -177,6 +177,9 @@ app.post("/cadastrar-lote", (req, res) => {
     const data = req.body.data;
 
     for (let i = 0; i < data.length; i++) {
+        const dataAtual = new Date()
+        const dataFormatada = format(dataAtual, 'yyyy-MM-dd')
+        console.log(dataFormatada)
         const produtoAtual = data[i];
 
         const {
