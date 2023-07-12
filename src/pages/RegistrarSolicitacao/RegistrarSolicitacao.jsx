@@ -131,7 +131,8 @@ function RegistrarSolicitacao() {
 
 
     const finalizar = () => {
-        if (!valorTabela) {
+        console.log(valorTabela)
+        if (!valorTabela.length || !currentPageItems.length) {
             return toast.error('Adicione um produto a sua solicitação.')
         } else {
             Axios.post('http://localhost:8080/finalizar-solicitacao', {
